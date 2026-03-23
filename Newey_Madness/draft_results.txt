@@ -1,0 +1,76 @@
+Parker
+  Seed 1: Duke
+  Seed 3: Gonzaga
+  Seed 4: Kansas
+  Seed 6: BYU
+  Seed 7: UCLA
+  Seed 9: Utah St.
+  Seed 10: UCF
+  Seed 12: High Point
+  Seed 13: California Baptist
+  Seed 15: Queens (NC)
+  Seed 16: Siena
+
+Ava
+  Seed 1: Florida
+  Seed 3: Virginia
+  Seed 4: Nebraska
+  Seed 6: Tennessee
+  Seed 7: Saint Mary's (CA)
+  Seed 9: Saint Louis
+  Seed 10: Texas A&M
+  Seed 12: Akron
+  Seed 13: Troy
+  Seed 15: Tennessee St.
+  Seed 16: Lehigh/Prairie View winner
+
+Liam
+  Seed 1: Michigan
+  Seed 3: Illinois
+  Seed 4: Alabama
+  Seed 6: North Carolina
+  Seed 7: Kentucky
+  Seed 9: Iowa
+  Seed 10: Santa Clara
+  Seed 12: McNeese
+  Seed 13: Hofstra
+  Seed 15: Idaho
+  Seed 16: Howard/UMBC winner
+
+Brooke & Rhett
+  Seed 1: Arizona
+  Seed 3: Michigan St.
+  Seed 4: Arkansas
+  Seed 6: Louisville
+  Seed 7: Miami (FL)
+  Seed 9: TCU
+  Seed 10: Missouri
+  Seed 12: UNI
+  Seed 13: Hawaii
+  Seed 15: Furman
+  Seed 16: LIU
+
+Anders
+  Seed 2: UConn
+  Seed 2: Purdue
+  Seed 5: St. John's (NY)
+  Seed 5: Wisconsin
+  Seed 8: Ohio St.
+  Seed 8: Villanova
+  Seed 11: South Florida
+  Seed 11: NC State/Texas winner
+  Seed 14: North Dakota St.
+  Seed 14: Kennesaw St.
+
+Sadie
+  Seed 2: Houston
+  Seed 2: Iowa St.
+  Seed 5: Vanderbilt
+  Seed 5: Texas Tech
+  Seed 8: Clemson
+  Seed 8: Georgia
+  Seed 11: VCU
+  Seed 11: SMU/Miami (OH) winner
+  Seed 14: Penn
+  Seed 14: Wright St.
+

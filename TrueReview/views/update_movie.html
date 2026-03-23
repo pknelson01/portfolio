@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TrueReview - Update Movie Review</title>
+    <link rel="icon" href="../TrueReview_logo/Icon_BW.png" type="image/png">
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;600;700&family=Anonymous+Pro:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --concrete: #525252;
+            --steel: #A8A8A8;
+            --white: #FFFFFF;
+            --charcoal: #2B2B2B;
+            --off-white: #E8E8E8;
+        }
+
+        body {
+            font-family: 'Anonymous Pro', monospace;
+            background: var(--concrete);
+            color: var(--off-white);
+            line-height: 1.5;
+            position: relative;
+            min-height: 100vh;
+            padding-top: 95px; /* Header height (55px) + tab bar (40px) */
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image:
+                repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.03) 2px, rgba(0,0,0,0.03) 4px),
+                repeating-linear-gradient(90deg, transparent, transparent 2px, rgba(0,0,0,0.03) 2px, rgba(0,0,0,0.03) 4px);
+            pointer-events: none;
+            z-index: 100;
+        }
+
+        .grid-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image:
+                linear-gradient(rgba(255, 255, 255, 0.1) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.1) 1px, transparent 1px);
+            background-size: 100px 100px;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .container {
+            position: relative;
+            z-index: 1;
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        .header-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            width: 100%;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        .header-bar {
+            background: var(--white);
+            border-bottom: 4px solid var(--charcoal);
+            padding: 0;
+            display: grid;
+            grid-template-columns: 120px 1fr 120px;
+            height: 55px;
+        }
+
+        .logo-section {
+            background: var(--white);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .logo {
+            font-family: 'Oswald', sans-serif;
+            font-size: 26px;
+            font-weight: 700;
+            color: var(--charcoal);
+            letter-spacing: -2px;
+            text-decoration: none;
+        }
+
+        .center-info {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 40px;
+            position: relative;
+            gap: 20px;
+        }
+
+        .site-title {
+            font-family: 'Oswald', sans-serif;
+            font-size: 14px;
+            color: var(--charcoal);
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            white-space: nowrap;
+        }
+
+        .header-search {
+            display: flex;
+            align-items: center;
+        }
+
+        .search-btn {
+            background: transparent;
+            border: 1px solid var(--charcoal);
+            color: var(--charcoal);
+            padding: 6px 12px;
+            font-family: 'Oswald', sans-serif;
+            font-size: 10px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .search-btn:hover {
+            background: var(--charcoal);
+            color: var(--white);
+            border-color: var(--charcoal);
+        }
+
+        .status-text {
+            position: absolute;
+            right: 20px;
+            font-size: 9px;
+            color: var(--charcoal);
+            letter-spacing: 2px;
+        }
+
+        .status-section {
+            background: var(--white);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border-left: 2px solid var(--charcoal);
+            position: relative;
+            padding: 8px;
+        }
+
+        .logout-btn {
+            background: transparent;
+            border: 1px solid var(--charcoal);
+            color: var(--charcoal);
+            padding: 6px 12px;
+            font-family: 'Oswald', sans-serif;
+            font-size: 10px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .logout-btn:hover {
+            background: var(--charcoal);
+            color: var(--white);
+            border-color: var(--charcoal);
+        }
+
+        .tab-bar {
+            background: var(--charcoal);
+            border-bottom: 2px solid var(--white);
+            height: 40px;
+            display: flex;
+            align-items: stretch;
+        }
+
+        .tab {
+            flex: 1;
+            background: rgba(0, 0, 0, 0.3);
+            border-right: 2px solid var(--white);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Oswald', sans-serif;
+            font-size: 12px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--steel);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            text-decoration: none;
+        }
+
+        .tab:hover {
+            background: rgba(255, 255, 255, 0.2);
+            color: var(--white);
+        }
+
+        .tab.active {
+            background: var(--white);
+            color: var(--charcoal);
+        }
+
+        .tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--white);
+        }
+
+        .update-container {
+            position: relative;
+            z-index: 1;
+            max-width: 1000px;
+            margin: 60px auto;
+            padding: 0 60px;
+        }
+
+        .update-title {
+            font-family: 'Oswald', sans-serif;
+            font-size: 48px;
+            font-weight: 700;
+            color: var(--white);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 40px;
+            text-align: center;
+            border-bottom: 2px solid var(--white);
+            padding-bottom: 20px;
+        }
+
+        .movie-section {
+            background: var(--charcoal);
+            border: 2px solid var(--white);
+            padding: 40px;
+            margin-bottom: 40px;
+            display: grid;
+            grid-template-columns: 200px 1fr;
+            gap: 40px;
+            align-items: center;
+        }
+
+        .poster {
+            width: 100%;
+            aspect-ratio: 2/3;
+            object-fit: cover;
+            border: 2px solid var(--white);
+            background: url('/TrueReview_logo/Poster_BW.png');
+            background-size: cover;
+            background-position: center;
+        }
+
+        .movie-info h2 {
+            font-family: 'Oswald', sans-serif;
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--off-white);
+            text-transform: uppercase;
+            letter-spacing: -1px;
+            margin-bottom: 10px;
+        }
+
+        .movie-info p {
+            font-size: 16px;
+            color: var(--steel);
+        }
+
+        #update-form, #delete-form {
+            background: var(--charcoal);
+            border: 2px solid var(--white);
+            padding: 40px;
+            margin-bottom: 20px;
+        }
+
+        #update-form label {
+            font-family: 'Oswald', sans-serif;
+            font-size: 12px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--steel);
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        #update-form input[type="range"],
+        #update-form textarea {
+            width: 100%;
+            font-family: 'Anonymous Pro', monospace;
+            background: rgba(0, 0, 0, 0.3);
+            border: 2px solid var(--steel);
+            color: var(--off-white);
+            padding: 15px;
+            font-size: 16px;
+            margin-bottom: 25px;
+            transition: all 0.3s ease;
+        }
+
+        #update-form input[type="range"] {
+            -webkit-appearance: none;
+            appearance: none;
+            height: 8px;
+            background: var(--steel);
+            outline: none;
+            padding: 0;
+        }
+
+        #update-form input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 24px;
+            height: 24px;
+            background: var(--white);
+            cursor: pointer;
+            border-radius: 50%;
+        }
+
+        #update-form input[type="range"]::-moz-range-thumb {
+            width: 24px;
+            height: 24px;
+            background: var(--white);
+            cursor: pointer;
+            border-radius: 50%;
+            border: none;
+        }
+
+        #update-form textarea:focus {
+            outline: none;
+            border-color: var(--white);
+            background: rgba(0, 0, 0, 0.5);
+        }
+
+        .rating-value {
+            font-family: 'Oswald', sans-serif;
+            font-size: 48px;
+            font-weight: 700;
+            color: var(--white);
+            text-align: center;
+            margin-bottom: 15px;
+        }
+
+        .submit-btn {
+            width: 100%;
+            font-family: 'Oswald', sans-serif;
+            font-size: 16px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            padding: 18px;
+            background: var(--white);
+            color: var(--charcoal);
+            border: 2px solid var(--white);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .submit-btn:hover {
+            background: transparent;
+            color: var(--white);
+            transform: translateY(-2px);
+        }
+
+        .watchlist-btn {
+            width: 100%;
+            font-family: 'Oswald', sans-serif;
+            font-size: 16px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            padding: 18px;
+            background: transparent;
+            color: var(--white);
+            border: 2px solid var(--white);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 15px;
+        }
+
+        .watchlist-btn:hover {
+            background: var(--white);
+            color: var(--charcoal);
+            transform: translateY(-2px);
+        }
+
+        .delete-btn {
+            width: 100%;
+            font-family: 'Oswald', sans-serif;
+            font-size: 16px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            padding: 18px;
+            background: transparent;
+            color: #ff6666;
+            border: 2px solid #ff6666;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .delete-btn:hover {
+            background: #ff6666;
+            color: var(--charcoal);
+            transform: translateY(-2px);
+        }
+
+        /* Custom Confirmation Modal */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.85);
+            z-index: 10000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal-box {
+            background: var(--charcoal);
+            border: 3px solid var(--white);
+            padding: 40px;
+            max-width: 500px;
+            width: 90%;
+            position: relative;
+        }
+
+        .modal-title {
+            font-family: 'Oswald', sans-serif;
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--white);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid var(--white);
+            padding-bottom: 15px;
+        }
+
+        .modal-message {
+            font-family: 'Anonymous Pro', monospace;
+            font-size: 16px;
+            color: var(--off-white);
+            line-height: 1.6;
+            margin-bottom: 30px;
+        }
+
+        .modal-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .modal-btn {
+            font-family: 'Oswald', sans-serif;
+            font-size: 14px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            padding: 15px;
+            border: 2px solid var(--white);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .modal-btn-yes {
+            background: var(--white);
+            color: var(--charcoal);
+        }
+
+        .modal-btn-yes:hover {
+            background: transparent;
+            color: var(--white);
+        }
+
+        .modal-btn-no {
+            background: transparent;
+            color: var(--white);
+        }
+
+        .modal-btn-no:hover {
+            background: var(--white);
+            color: var(--charcoal);
+        }
+    </style>
+</head>
+<body>
+    <div class="grid-overlay"></div>
+
+    <!-- Custom Confirmation Modal -->
+    <div class="modal-overlay" id="confirm-modal">
+        <div class="modal-box">
+            <div class="modal-title">Confirm Action</div>
+            <div class="modal-message">
+                Are you sure? This will delete your entry and review.
+            </div>
+            <div class="modal-buttons">
+                <button class="modal-btn modal-btn-yes" id="modal-yes">Yes, I'm Sure</button>
+                <button class="modal-btn modal-btn-no" id="modal-no">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="header-container">
+        <div class="header-bar">
+            <div class="logo-section">
+                <a href="/dashboard" class="logo">TrueReview</a>
+            </div>
+            <div class="center-info">
+                <div class="site-title">Film Analysis Platform</div>
+                <div class="header-search">
+                    <a href="/add-movie" class="search-btn">Search</a>
+                </div>
+                <!-- <div class="status-text">SYSTEM: ONLINE</div> -->
+            </div>
+            <div class="status-section">
+                <form action="/logout" method="POST">
+                    <button class="logout-btn">Logout</button>
+                </form>
+            </div>
+        </div>
+
+        <div class="tab-bar">
+            <span class="tab">FOLLOWING (coming soon...)</span>
+            <a href="/watched" class="tab">WATCHED</a>
+            <a href="/watchlist" class="tab">WATCHLIST</a>
+            <span class="tab">TOP-N (coming soon...)</span>
+            <a href="/dashboard" class="tab" id="dashboard-tab"></a>
+        </div>
+    </div>
+
+    <div class="update-container">
+        <h1 class="update-title">Update Your Review</h1>
+
+        <div class="movie-section">
+            <img id="movie-poster" class="poster" src="" alt="Poster" />
+            <div class="movie-info">
+                <h2 id="movie-title"></h2>
+                <p id="movie-year"></p>
+            </div>
+        </div>
+
+        <form id="update-form" method="POST">
+            <label for="rating">Your Rating (0.0 - 10.0):</label>
+            <div class="rating-value" id="rating-display">5.0</div>
+            <input
+                type="range"
+                id="rating"
+                name="rating"
+                min="0"
+                max="10"
+                step="0.1"
+                value="5.0"
+                required
+            />
+
+            <label for="review">Review (optional):</label>
+            <textarea id="review" name="review" rows="5"></textarea>
+
+            <button type="submit" class="submit-btn">Update</button>
+            <button type="button" class="watchlist-btn" id="watchlist-btn">Move to Watchlist</button>
+        </form>
+
+        <form id="delete-form" method="POST">
+            <button type="submit" class="delete-btn">Delete Entry</button>
+        </form>
+    </div>
+
+    <script src="/public/js/update_movie.js"></script>
+    <script>
+        // watchedId is already declared in update_movie.js
+
+        // Update dashboard tab with username
+        async function updateDashboardTab() {
+            try {
+                const res = await fetch("/api/user/username");
+                const data = await res.json();
+                document.getElementById("dashboard-tab").textContent = data.display_name.toUpperCase();
+            } catch (err) {
+                console.error("Error loading username:", err);
+            }
+        }
+        updateDashboardTab();
+
+        // Custom modal function
+        function showConfirmModal() {
+            return new Promise((resolve) => {
+                const modal = document.getElementById("confirm-modal");
+                const yesBtn = document.getElementById("modal-yes");
+                const noBtn = document.getElementById("modal-no");
+
+                // Show modal
+                modal.classList.add("active");
+
+                // Handle Yes button
+                const handleYes = () => {
+                    modal.classList.remove("active");
+                    yesBtn.removeEventListener("click", handleYes);
+                    noBtn.removeEventListener("click", handleNo);
+                    resolve(true);
+                };
+
+                // Handle No button
+                const handleNo = () => {
+                    modal.classList.remove("active");
+                    yesBtn.removeEventListener("click", handleYes);
+                    noBtn.removeEventListener("click", handleNo);
+                    resolve(false);
+                };
+
+                yesBtn.addEventListener("click", handleYes);
+                noBtn.addEventListener("click", handleNo);
+
+                // Close on overlay click
+                modal.addEventListener("click", (e) => {
+                    if (e.target === modal) {
+                        handleNo();
+                    }
+                });
+            });
+        }
+
+        // Add to watchlist functionality (move from watched to watchlist)
+        const watchlistBtn = document.getElementById("watchlist-btn");
+
+        if (watchlistBtn) {
+            watchlistBtn.addEventListener("click", async () => {
+                // Show custom modal instead of browser confirm
+                const confirmed = await showConfirmModal();
+                if (!confirmed) return;
+
+                try {
+                    // Get movie_id from the watched entry
+                    const watchedRes = await fetch(`/api/watched/${watchedId}`);
+
+                    if (!watchedRes.ok) {
+                        console.error("Failed to get movie details");
+                        return;
+                    }
+                    const watchedData = await watchedRes.json();
+                    const movieId = watchedData.movie_id;
+
+                    // Move to watchlist
+                    const res = await fetch("/api/watchlist/move-from-watched", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ watched_id: watchedId, movie_id: movieId })
+                    });
+
+                    if (!res.ok) {
+                        const error = await res.json();
+                        console.error("Failed to move to watchlist:", error);
+                        return;
+                    }
+
+                    window.location.href = "/watchlist";
+                } catch (err) {
+                    console.error("Error moving to watchlist:", err);
+                }
+            });
+        }
+
+        // Validate rating to one decimal place
+        document.getElementById("update-form").addEventListener("submit", (e) => {
+            const ratingInput = document.getElementById("rating");
+            const rating = parseFloat(ratingInput.value);
+
+            // Check if rating is valid
+            if (isNaN(rating) || rating < 0 || rating > 10) {
+                e.preventDefault();
+                alert("Please enter a rating between 0.0 and 10.0");
+                return;
+            }
+
+            // Round to one decimal place
+            const rounded = Math.round(rating * 10) / 10;
+            ratingInput.value = rounded;
+        });
+    </script>
+</body>
+</html>

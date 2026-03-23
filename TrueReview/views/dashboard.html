@@ -1,0 +1,1682 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TrueReview - Dashboard</title>
+    <link rel="icon" type="image/png" href="../TrueReview_logo/Icon_BW.png">
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;600;700&family=Anonymous+Pro:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --truereview: #525252;
+            --steel: #A8A8A8;
+            --white: #FFFFFF;
+            --charcoal: #2B2B2B;
+            --off-white: #E8E8E8;
+        }
+
+        body {
+            font-family: 'Anonymous Pro', monospace;
+            background: var(--truereview);
+            color: var(--off-white);
+            line-height: 1.5;
+            position: relative;
+            min-height: 100vh;
+            padding-top: 95px; /* Header height (55px) + tab bar (40px) */
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image:
+                repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.03) 2px, rgba(0,0,0,0.03) 4px),
+                repeating-linear-gradient(90deg, transparent, transparent 2px, rgba(0,0,0,0.03) 2px, rgba(0,0,0,0.03) 4px);
+            pointer-events: none;
+            z-index: 100;
+        }
+
+        .grid-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image:
+                linear-gradient(rgba(255, 255, 255, 0.1) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.1) 1px, transparent 1px);
+            background-size: 100px 100px;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .container {
+            position: relative;
+            z-index: 1;
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        .header-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            width: 100%;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        .header-bar {
+            background: var(--white);
+            border-bottom: 4px solid var(--charcoal);
+            padding: 0;
+            display: grid;
+            grid-template-columns: 120px 1fr 120px;
+            height: 55px;
+        }
+
+        .logo-section {
+            background: var(--white);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .logo {
+            font-family: 'Oswald', sans-serif;
+            font-size: 26px;
+            font-weight: 700;
+            color: var(--charcoal);
+            letter-spacing: -2px;
+            text-decoration: none;
+        }
+
+        .center-info {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 40px;
+            position: relative;
+            gap: 20px;
+        }
+
+        .site-title {
+            font-family: 'Oswald', sans-serif;
+            font-size: 14px;
+            color: var(--charcoal);
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            white-space: nowrap;
+        }
+
+        .header-search {
+            display: flex;
+            align-items: center;
+        }
+
+        .search-btn {
+            background: transparent;
+            border: 1px solid var(--charcoal);
+            color: var(--charcoal);
+            padding: 6px 12px;
+            font-family: 'Oswald', sans-serif;
+            font-size: 10px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .search-btn:hover {
+            background: var(--charcoal);
+            color: var(--white);
+            border-color: var(--charcoal);
+        }
+
+        .status-text {
+            position: absolute;
+            right: 20px;
+            font-size: 9px;
+            color: var(--charcoal);
+            letter-spacing: 2px;
+        }
+
+        .coordinates {
+            font-size: 12px;
+            color: var(--white);
+            letter-spacing: 2px;
+            margin-top: 5px;
+        }
+
+        .status-section {
+            background: var(--white);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border-left: 2px solid var(--charcoal);
+            position: relative;
+            padding: 8px;
+        }
+
+        .logout-btn {
+            background: transparent;
+            border: 1px solid var(--charcoal);
+            color: var(--charcoal);
+            padding: 6px 12px;
+            font-family: 'Oswald', sans-serif;
+            font-size: 10px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .logout-btn:hover {
+            background: var(--charcoal);
+            color: var(--white);
+            border-color: var(--charcoal);
+        }
+
+        .tab-bar {
+            background: var(--charcoal);
+            border-bottom: 2px solid var(--white);
+            height: 40px;
+            display: flex;
+            align-items: stretch;
+        }
+
+        .tab {
+            flex: 1;
+            background: rgba(0, 0, 0, 0.3);
+            border-right: 2px solid var(--white);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Oswald', sans-serif;
+            font-size: 12px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--steel);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            text-decoration: none;
+        }
+
+        .tab:hover {
+            background: rgba(255, 255, 255, 0.2);
+            color: var(--white);
+        }
+
+        .tab.active {
+            background: var(--white);
+            color: var(--charcoal);
+        }
+
+        .tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--white);
+        }
+
+        .main-content {
+            padding: 30px;
+        }
+
+        .profile-section {
+            background: var(--charcoal);
+            border: 2px solid var(--white);
+            padding: 0;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .profile-header {
+            background: var(--white);
+            padding: 20px;
+            border-bottom: 2px solid var(--charcoal);
+            position: relative;
+        }
+
+        .profile-label {
+            font-family: 'Oswald', sans-serif;
+            font-size: 12px;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: var(--charcoal);
+            font-weight: 600;
+        }
+
+        .add-movie-btn {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            background: var(--charcoal);
+            border: 2px solid var(--charcoal);
+            color: var(--white);
+            padding: 8px 16px;
+            font-family: 'Oswald', sans-serif;
+            font-size: 11px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .add-movie-btn:hover {
+            background: var(--white);
+            color: var(--charcoal);
+            transform: translateY(-2px);
+        }
+
+        .profile-body {
+            padding: 15px;
+        }
+
+        .top-section {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 20px;
+            margin-bottom: 20px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid var(--white);
+            align-items: end;
+        }
+
+        .user-info-column {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .profile-picture-container {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 15px;
+            position: relative;
+        }
+
+        .profile-picture {
+            width: 120px;
+            height: 120px;
+            background: linear-gradient(135deg, var(--charcoal) 0%, #1a1a1a 100%), url('/TrueReview_logo/Icon_BW.png');
+            background-size: cover;
+            background-position: center;
+            border: 3px solid var(--white);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Oswald', sans-serif;
+            font-size: 48px;
+            color: var(--white);
+            position: relative;
+            cursor: pointer;
+            overflow: hidden;
+        }
+
+        .profile-picture img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .profile-picture .edit-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(43, 43, 43, 0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .profile-picture:hover .edit-overlay {
+            opacity: 1;
+        }
+
+        .profile-picture .edit-overlay i {
+            color: var(--white);
+            font-size: 32px;
+        }
+
+        .username {
+            font-family: 'Anonymous Pro', monospace;
+            font-size: 14px;
+            color: var(--steel);
+            text-align: center;
+            margin-bottom: 5px;
+        }
+
+        .user-display-name {
+            font-family: 'Oswald', sans-serif;
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--off-white);
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 5px;
+        }
+
+        .user-title {
+            font-size: 14px;
+            font-style: italic;
+            color: var(--steel);
+            text-align: center;
+            margin-bottom: 15px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .stat-box {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 12px;
+            border-left: 3px solid var(--white);
+        }
+
+        .stat-box.clickable {
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .stat-box.clickable:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-left-color: var(--off-white);
+        }
+
+        .stat-number {
+            font-family: 'Oswald', sans-serif;
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--white);
+            line-height: 1;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 10px;
+            color: var(--steel);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        /* Modal Styles */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--charcoal);
+            border: 2px solid var(--white);
+            max-width: 600px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .modal-header {
+            padding: 20px;
+            border-bottom: 2px solid var(--white);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            background: var(--charcoal);
+            z-index: 10;
+        }
+
+        .modal-title {
+            font-family: 'Oswald', sans-serif;
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--white);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .modal-close {
+            background: transparent;
+            border: 1px solid var(--white);
+            color: var(--white);
+            padding: 6px 12px;
+            font-family: 'Oswald', sans-serif;
+            font-size: 10px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .modal-close:hover {
+            background: var(--white);
+            color: var(--charcoal);
+        }
+
+        .modal-body {
+            padding: 20px;
+        }
+
+        .user-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 2px solid var(--steel);
+            margin-bottom: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .user-item:hover {
+            border-color: var(--white);
+        }
+
+        .user-item-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .user-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border: 2px solid var(--white);
+            object-fit: cover;
+            background: url('/TrueReview_logo/Icon_BW.png');
+            background-size: cover;
+            background-position: center;
+        }
+
+        .user-username {
+            font-family: 'Oswald', sans-serif;
+            font-size: 18px;
+            color: var(--white);
+            letter-spacing: 1px;
+        }
+
+        .follow-btn {
+            background: var(--white);
+            border: 2px solid var(--white);
+            color: var(--charcoal);
+            padding: 8px 16px;
+            font-family: 'Oswald', sans-serif;
+            font-size: 11px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .follow-btn:hover {
+            background: var(--off-white);
+        }
+
+        .following-btn {
+            background: transparent;
+            border: 2px solid var(--white);
+            color: var(--white);
+            padding: 8px 16px;
+            font-family: 'Oswald', sans-serif;
+            font-size: 11px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .following-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .empty-list {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--steel);
+            font-size: 16px;
+        }
+
+        .movies-column {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .movies-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .movie-container {
+            display: flex;
+            flex-direction: column;
+            width: fit-content;
+            margin: 0 auto;
+        }
+
+        .movie-badge {
+            background: var(--white);
+            color: var(--charcoal);
+            padding: 8px 12px;
+            font-family: 'Oswald', sans-serif;
+            font-size: 10px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            font-weight: 600;
+            text-align: center;
+            margin-bottom: 10px;
+            border: 2px solid var(--white);
+        }
+
+        /* Default: Padding-bottom fallback (works everywhere, Safari uses this) */
+        .movie-display {
+            position: relative;
+            width: 100%;
+            max-width: 253px; /* 380px * (2/3) = 253px */
+            background: var(--charcoal);
+            border: 2px solid var(--white);
+            cursor: pointer;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .movie-display::before {
+            content: '';
+            display: block;
+            padding-bottom: 150%; /* 2:3 aspect ratio */
+        }
+
+        .movie-poster {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, rgba(43, 43, 43, 0.5) 0%, rgba(26, 26, 26, 0.5) 100%), url('/TrueReview_logo/Poster_BW.png');
+            background-size: cover;
+            background-position: center;
+            font-family: 'Oswald', sans-serif;
+            font-size: 72px;
+            color: var(--steel);
+            opacity: 1;
+            transition: opacity 0.3s ease;
+        }
+
+        /* Progressive Enhancement: Modern browsers with working aspect-ratio (Chrome) */
+        @supports (aspect-ratio: 2/3) {
+            .movie-display {
+                aspect-ratio: 2/3;
+                max-height: 380px;
+                max-width: none;
+            }
+
+            .movie-display::before {
+                display: none; /* Remove padding-bottom trick */
+            }
+
+            .movie-poster {
+                position: relative;
+                width: 100%;
+                height: 100%;
+            }
+        }
+
+        .movie-display:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(255, 255, 255, 0.4);
+        }
+
+        .movie-poster img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 1;
+        }
+
+        .movie-display:hover .movie-poster {
+            opacity: 0.75;
+        }
+
+        .movie-info {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(43, 43, 43, 0.75);
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .movie-display:hover .movie-info {
+            opacity: 1;
+        }
+
+        .rating-display {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-family: 'Oswald', sans-serif;
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--white);
+            line-height: 1;
+        }
+
+        .rating-label {
+            position: absolute;
+            top: 45px;
+            right: 10px;
+            font-size: 8px;
+            color: var(--steel);
+            letter-spacing: 2px;
+        }
+
+        .movie-title {
+            font-family: 'Oswald', sans-serif;
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--off-white);
+            text-transform: uppercase;
+            letter-spacing: -1px;
+            line-height: 1.1;
+            margin-bottom: 10px;
+        }
+
+        .movie-meta {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .meta-item {
+            display: flex;
+            border-left: 3px solid var(--white);
+            padding-left: 15px;
+        }
+
+        .meta-label {
+            font-size: 10px;
+            color: var(--steel);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            width: 70px;
+        }
+
+        .meta-value {
+            font-family: 'Oswald', sans-serif;
+            font-size: 14px;
+            color: var(--off-white);
+        }
+
+        .bio-section {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 15px;
+            border-left: 3px solid var(--white);
+        }
+
+        .bio-label {
+            font-size: 9px;
+            color: var(--steel);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+
+        .bio-text {
+            font-size: 13px;
+            line-height: 1.4;
+            color: var(--off-white);
+        }
+
+        /* COMMENTED OUT - Watched List Section CSS
+        .watched-list-section {
+            background: var(--charcoal);
+            border: 2px solid var(--white);
+            padding: 0;
+            max-width: 1400px;
+            margin: 60px auto 0;
+        }
+
+        .watched-header {
+            padding: 40px;
+            border-bottom: 2px solid var(--white);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .watched-title {
+            font-family: 'Oswald', sans-serif;
+            font-size: 36px;
+            font-weight: 700;
+            color: var(--off-white);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .total-entries {
+            font-size: 14px;
+            color: var(--white);
+            letter-spacing: 2px;
+        }
+
+        .watched-body {
+            padding: 40px;
+        }
+
+        .watched-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 30px;
+        }
+
+        .watched-entry {
+            position: relative;
+            aspect-ratio: 2/3;
+            background: var(--charcoal);
+            border: 2px solid var(--white);
+            cursor: pointer;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+
+        .watched-entry:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(255, 255, 255, 0.4);
+            border-color: var(--white);
+        }
+
+        .watched-poster {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, var(--charcoal) 0%, #1a1a1a 100%);
+            font-family: 'Oswald', sans-serif;
+            font-size: 72px;
+            color: var(--steel);
+            opacity: 1;
+            transition: opacity 0.3s ease;
+        }
+
+        .watched-poster img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 1;
+        }
+
+        .watched-entry:hover .watched-poster {
+            opacity: 0.75;
+        }
+
+        .watched-info {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(43, 43, 43, 0.75);
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .watched-entry:hover .watched-info {
+            opacity: 1;
+        }
+
+        .watched-entry-number {
+            position: absolute;
+            bottom: 10px;
+            left: 10px;
+            font-family: 'Oswald', sans-serif;
+            font-size: 18px;
+            color: var(--white);
+            opacity: 0.5;
+            transition: opacity 0.3s ease;
+            z-index: 10;
+        }
+
+        .watched-entry:hover .watched-entry-number {
+            opacity: 1;
+        }
+
+        .empty-msg {
+            text-align: center;
+            color: var(--steel);
+            font-size: 18px;
+            padding: 60px 20px;
+        }
+        END COMMENTED OUT */
+
+        .kernels-delta {
+            position: absolute;
+            top: -10px;
+            right: -60px;
+            font-family: 'Oswald', sans-serif;
+            font-size: 28px;
+            font-weight: 700;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .kernels-delta.positive {
+            color: #44ff44;
+        }
+
+        .kernels-delta.negative {
+            color: #ff4444;
+        }
+
+        .kernels-delta.show {
+            opacity: 1;
+            animation: deltaFloat 3s ease-out forwards;
+        }
+
+        .ten-star-delta {
+            position: absolute;
+            top: -10px;
+            right: -60px;
+            font-family: 'Oswald', sans-serif;
+            font-size: 28px;
+            font-weight: 700;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .ten-star-delta.positive {
+            color: #44ff44;
+        }
+
+        .ten-star-delta.negative {
+            color: #ff4444;
+        }
+
+        .ten-star-delta.show {
+            opacity: 1;
+            animation: deltaFloat 3s ease-out forwards;
+        }
+
+        @keyframes deltaFloat {
+            0% {
+                transform: translateY(0) scale(1);
+                opacity: 1;
+            }
+            70% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-20px) scale(0.8);
+                opacity: 0;
+            }
+        }
+
+        @keyframes numberPulsePositive {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.1);
+                color: #44ff44;
+            }
+        }
+
+        @keyframes numberPulseNegative {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.1);
+                color: #ff4444;
+            }
+        }
+
+        .stat-number.animate-positive {
+            animation: numberPulsePositive 0.6s ease-out;
+        }
+
+        .stat-number.animate-negative {
+            animation: numberPulseNegative 0.6s ease-out;
+        }
+    </style>
+</head>
+<body>
+    <div class="grid-overlay"></div>
+
+    <div class="header-container">
+        <div class="header-bar">
+            <div class="logo-section">
+                <div class="logo">TrueReview</div>
+            </div>
+            <div class="center-info">
+                <div class="site-title">Film Analysis Platform</div>
+                <div class="header-search">
+                    <a href="/add-movie" class="search-btn">Search</a>
+                </div>
+                <!-- <div class="status-text">SYSTEM: ONLINE</div> -->
+            </div>
+            <div class="status-section">
+                <form action="/logout" method="POST">
+                    <button class="logout-btn">Logout</button>
+                </form>
+            </div>
+        </div>
+
+        <div class="tab-bar">
+            <span class="tab">FOLLOWING (coming soon...)</span>
+            <a href="/watched" class="tab">WATCHED</a>
+            <a href="/watchlist" class="tab">WATCHLIST</a>
+            <span class="tab">TOP-N (coming soon...)</span>
+            <a href="/dashboard" class="tab active" id="dashboard-tab"></a>
+        </div>
+    </div>
+
+    <div class="container">
+
+        <div class="main-content">
+            <!-- Profile Section -->
+            <div class="profile-section">
+                <div class="profile-header">
+                    <div class="profile-label">User Profile</div>
+                    <a href="/edit-profile" class="add-movie-btn">EDIT</a>
+                </div>
+                <div class="profile-body">
+                    <!-- Top Section: User Info + Movies -->
+                    <div class="top-section">
+                        <!-- User Info Column -->
+                        <div class="user-info-column">
+                            <div class="profile-picture-container">
+                                <div class="profile-picture" onclick="triggerFileInput('pfp-input'); event.stopPropagation();">
+                                    <span id="profile-initials"></span>
+                                    <img id="profile-pic" style="display:none;" />
+                                    <div class="edit-overlay">
+                                        <i class="fa-solid fa-pencil"></i>
+                                    </div>
+                                </div>
+                                <input id="pfp-input" type="file" accept="image/*" style="display:none;">
+                            </div>
+
+                            <div class="username" id="display-username">@username</div>
+                            <div class="user-display-name" id="user-display-name">Display Name</div>
+                            <div class="user-title" id="user-title"></div>
+
+                            <div class="stats-grid">
+                                <div class="stat-box clickable" id="followersBox">
+                                    <div style="position: relative; display: inline-block;">
+                                        <div class="stat-number" id="followerCount">0</div>
+                                        <div class="kernels-delta" id="followerDelta"></div>
+                                    </div>
+                                    <div class="stat-label">Followers</div>
+                                </div>
+                                <div class="stat-box clickable" id="followingBox">
+                                    <div style="position: relative; display: inline-block;">
+                                        <div class="stat-number" id="followingCount">0</div>
+                                        <div class="kernels-delta" id="followingDelta"></div>
+                                    </div>
+                                    <div class="stat-label">Following</div>
+                                </div>
+                                <div class="stat-box">
+                                    <div class="stat-number" id="totalMovies">0</div>
+                                    <div class="stat-label">Movies Watched</div>
+                                </div>
+                                <div class="stat-box clickable" onclick="goToWatchedWith10Rating()">
+                                    <div style="position: relative; display: inline-block;">
+                                        <div class="stat-number" id="tenStarCount">0</div>
+                                        <div class="ten-star-delta" id="tenStarDelta"></div>
+                                    </div>
+                                    <div class="stat-label">10/10 Ratings</div>
+                                </div>
+                                <div class="stat-box">
+                                    <div class="stat-number" id="avgRating">0.0</div>
+                                    <div class="stat-label">Average Rating</div>
+                                </div>
+                                <div class="stat-box">
+                                    <div style="position: relative; display: inline-block;">
+                                        <div class="stat-number" id="popcornKernels">0</div>
+                                        <div class="kernels-delta" id="kernelsDelta"></div>
+                                    </div>
+                                    <div class="stat-label">Popcorn Kernels</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Movies Column -->
+                        <div class="movies-column">
+                            <div class="movies-grid">
+                                <!-- Last Watched -->
+                                <div class="movie-container">
+                                    <div class="movie-badge">Last Watched</div>
+                                    <div class="movie-display" id="last-watched-card">
+                                        <div class="movie-poster">
+                                            <span>LAST</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Favorite Movie -->
+                                <div class="movie-container">
+                                    <div class="movie-badge">Favorite Movie</div>
+                                    <div class="movie-display" id="favorite-movie-card">
+                                        <div class="movie-poster">
+                                            <span>FAV</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Bio Section (Full Width Below) -->
+                    <div class="bio-section">
+                        <div class="bio-label">Bio</div>
+                        <div class="bio-text" id="user-bio">No bio available</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- COMMENTED OUT - Watched List Section
+            <div class="watched-list-section">
+                <div class="watched-header">
+                    <h2 class="watched-title">Watched List</h2>
+                    <div class="total-entries" id="total-entries">TOTAL ENTRIES: 0</div>
+                </div>
+                <div class="watched-body">
+                    <div class="watched-grid" id="watched-grid">
+                        <!-- Movies will be loaded here -->
+                    </div>
+                </div>
+            </div>
+            <!-- END COMMENTED OUT -->
+        </div>
+    </div>
+
+    <script>
+        function triggerFileInput(id) {
+            document.getElementById(id).click();
+        }
+
+        // Animate counter from start to end value
+        function animateCounter(element, start, end, duration) {
+            const startTime = Date.now();
+            const difference = end - start;
+
+            function update() {
+                const elapsed = Date.now() - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+
+                // Easing function for smooth animation
+                const easeOutQuad = progress * (2 - progress);
+                const current = Math.round(start + (difference * easeOutQuad));
+
+                element.textContent = current;
+
+                if (progress < 1) {
+                    requestAnimationFrame(update);
+                } else {
+                    element.textContent = end;
+                }
+            }
+
+            requestAnimationFrame(update);
+        }
+
+        // Upload new profile picture
+        document.getElementById("pfp-input").addEventListener("change", async (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            const formData = new FormData();
+            formData.append("file", file);
+
+            await fetch("/api/upload/profile-picture", {
+                method: "POST",
+                body: formData
+            });
+
+            location.reload();
+        });
+
+        async function loadDashboard() {
+            try {
+                const res = await fetch("/api/dashboard");
+                const data = await res.json();
+                const user = data.user;
+
+                // Set username, display name and initials
+                document.getElementById("display-username").textContent = "@" + user.username;
+                document.getElementById("user-display-name").textContent = user.display_name;
+                const initials = user.display_name.split(' ').map(n => n[0]).join('').toUpperCase().substring(0, 2);
+                document.getElementById("profile-initials").textContent = initials;
+
+                // Update dashboard tab with display_name
+                document.getElementById("dashboard-tab").textContent = user.display_name.toUpperCase();
+
+                // Profile picture
+                if (user.profile_picture) {
+                    document.getElementById("profile-pic").src = "/uploads/profile_pictures/" + user.profile_picture;
+                    document.getElementById("profile-pic").style.display = "block";
+                    document.getElementById("profile-initials").style.display = "none";
+                }
+
+                // Title
+                if (user.title) {
+                    document.getElementById("user-title").textContent = user.title;
+                } else {
+                    document.getElementById("user-title").textContent = "";
+                }
+
+                // Bio
+                if (user.bio) {
+                    document.getElementById("user-bio").textContent = user.bio;
+                } else {
+                    document.getElementById("user-bio").textContent = `${user.username} - TrueReview User`;
+                }
+
+                // Stats
+                const currentFollowerCount = data.follower_count || 0;
+                const currentFollowingCount = data.following_count || 0;
+                const followerDelta = data.follower_delta || 0;
+                const followingDelta = data.following_delta || 0;
+
+                // Follower count with animation (only show if modal was just closed)
+                if (showAnimations && followerDelta !== 0) {
+                    const startValue = currentFollowerCount - followerDelta;
+                    const followerElement = document.getElementById("followerCount");
+                    const deltaElement = document.getElementById("followerDelta");
+                    const isPositive = followerDelta > 0;
+
+                    animateCounter(followerElement, startValue, currentFollowerCount, 800);
+
+                    deltaElement.textContent = followerDelta > 0 ? `+${followerDelta}` : `${followerDelta}`;
+                    deltaElement.classList.add('show');
+                    deltaElement.classList.add(isPositive ? 'positive' : 'negative');
+                    followerElement.classList.add(isPositive ? 'animate-positive' : 'animate-negative');
+
+                    setTimeout(() => {
+                        deltaElement.classList.remove('show', 'positive', 'negative');
+                        followerElement.classList.remove('animate-positive', 'animate-negative');
+                    }, 3000);
+                } else {
+                    document.getElementById("followerCount").textContent = currentFollowerCount;
+                }
+
+                // Following count with animation (only show if modal was just closed)
+                if (showAnimations && followingDelta !== 0) {
+                    const startValue = currentFollowingCount - followingDelta;
+                    const followingElement = document.getElementById("followingCount");
+                    const deltaElement = document.getElementById("followingDelta");
+                    const isPositive = followingDelta > 0;
+
+                    animateCounter(followingElement, startValue, currentFollowingCount, 800);
+
+                    deltaElement.textContent = followingDelta > 0 ? `+${followingDelta}` : `${followingDelta}`;
+                    deltaElement.classList.add('show');
+                    deltaElement.classList.add(isPositive ? 'positive' : 'negative');
+                    followingElement.classList.add(isPositive ? 'animate-positive' : 'animate-negative');
+
+                    setTimeout(() => {
+                        deltaElement.classList.remove('show', 'positive', 'negative');
+                        followingElement.classList.remove('animate-positive', 'animate-negative');
+                    }, 3000);
+                } else {
+                    document.getElementById("followingCount").textContent = currentFollowingCount;
+                }
+
+                // Reset animation flag after showing
+                if (showAnimations) {
+                    showAnimations = false;
+                }
+
+                document.getElementById("totalMovies").textContent = data.total_movies || 0;
+                document.getElementById("avgRating").textContent = data.avg_rating || "0.0";
+
+                // 10/10 Ratings with animation
+                const currentTenStarCount = data.ten_star_count || 0;
+                const tenStarDelta = data.ten_star_delta || 0;
+
+                if (tenStarDelta !== 0) {
+                    // Animate from old value to new value
+                    const startValue = currentTenStarCount - tenStarDelta;
+                    const tenStarElement = document.getElementById("tenStarCount");
+                    const deltaElement = document.getElementById("tenStarDelta");
+                    const isPositive = tenStarDelta > 0;
+
+                    // Animate the number with counter animation
+                    animateCounter(tenStarElement, startValue, currentTenStarCount, 800);
+
+                    // Show the delta with appropriate color
+                    deltaElement.textContent = tenStarDelta > 0 ? `+${tenStarDelta}` : `${tenStarDelta}`;
+                    deltaElement.classList.add('show');
+                    deltaElement.classList.add(isPositive ? 'positive' : 'negative');
+
+                    // Add pulse animation to the number
+                    tenStarElement.classList.add(isPositive ? 'animate-positive' : 'animate-negative');
+
+                    // Remove animations after they complete
+                    setTimeout(() => {
+                        deltaElement.classList.remove('show', 'positive', 'negative');
+                        tenStarElement.classList.remove('animate-positive', 'animate-negative');
+                    }, 3000);
+                } else {
+                    document.getElementById("tenStarCount").textContent = currentTenStarCount;
+                }
+
+                // Popcorn Kernels with animation
+                const currentKernels = data.user.popcorn_kernels || 0;
+                const delta = data.popcorn_kernels_delta || 0;
+
+                if (delta !== 0) {
+                    // Animate from old value to new value
+                    const startValue = currentKernels - delta;
+                    const kernelsElement = document.getElementById("popcornKernels");
+                    const deltaElement = document.getElementById("kernelsDelta");
+                    const isPositive = delta > 0;
+
+                    // Animate the number
+                    animateCounter(kernelsElement, startValue, currentKernels, 800);
+
+                    // Show the delta with appropriate color
+                    deltaElement.textContent = delta > 0 ? `+${delta}` : `${delta}`;
+                    deltaElement.classList.add('show');
+                    deltaElement.classList.add(isPositive ? 'positive' : 'negative');
+
+                    // Add pulse animation to the number
+                    kernelsElement.classList.add(isPositive ? 'animate-positive' : 'animate-negative');
+
+                    // Remove animations after they complete
+                    setTimeout(() => {
+                        deltaElement.classList.remove('show', 'positive', 'negative');
+                        kernelsElement.classList.remove('animate-positive', 'animate-negative');
+                    }, 3000);
+                } else {
+                    document.getElementById("popcornKernels").textContent = currentKernels;
+                }
+
+                // Last Watched Movie
+                if (data.last) {
+                    const lastCard = document.getElementById("last-watched-card");
+                    lastCard.innerHTML = `
+                        <div class="movie-poster">
+                            <img src="${data.last.poster_full_url}" alt="${data.last.movie_title}" onerror="this.src='/TrueReview_logo/Poster_BW.png'">
+                        </div>
+                        <div class="movie-info">
+                            <div class="rating-display">${data.last.user_rating}</div>
+                            <div class="rating-label">RATING</div>
+                            <h3 class="movie-title">${data.last.movie_title}</h3>
+                        </div>
+                    `;
+                    lastCard.style.cursor = "pointer";
+                    lastCard.onclick = () => window.location.href = `/update-movie/${data.last.watched_id}`;
+                }
+
+                // Favorite Movie (if available)
+                if (data.favorite && data.favorite.poster_full_url) {
+                    const favCard = document.getElementById("favorite-movie-card");
+                    favCard.innerHTML = `
+                        <div class="movie-poster">
+                            <img src="${data.favorite.poster_full_url}" alt="${data.favorite.movie_title}" onerror="this.src='/TrueReview_logo/Poster_BW.png'">
+                        </div>
+                        <div class="movie-info">
+                            <div class="rating-display">${data.favorite.user_rating || 'N/A'}</div>
+                            <div class="rating-label">RATING</div>
+                            <h3 class="movie-title">${data.favorite.movie_title}</h3>
+                        </div>
+                    `;
+                    if (data.favorite.watched_id) {
+                        favCard.style.cursor = "pointer";
+                        favCard.onclick = () => window.location.href = `/update-movie/${data.favorite.watched_id}`;
+                    }
+                }
+
+            } catch (err) {
+                console.error("Error loading dashboard:", err);
+            }
+        }
+
+        // Polling function: Check for follower/following updates every 5 seconds
+        let pollingInterval = null;
+
+        async function pollForUpdates() {
+            try {
+                const res = await fetch("/api/dashboard?updateSession=false");
+                const data = await res.json();
+
+                // Get current displayed counts
+                const currentFollowerCount = parseInt(document.getElementById("followerCount").textContent) || 0;
+                const currentFollowingCount = parseInt(document.getElementById("followingCount").textContent) || 0;
+
+                // Get new counts from server
+                const newFollowerCount = data.follower_count || 0;
+                const newFollowingCount = data.following_count || 0;
+
+                // Animate follower count if changed
+                const followerDelta = newFollowerCount - currentFollowerCount;
+                if (followerDelta !== 0) {
+                    const followerElement = document.getElementById("followerCount");
+                    const deltaElement = document.getElementById("followerDelta");
+                    const isPositive = followerDelta > 0;
+
+                    animateCounter(followerElement, currentFollowerCount, newFollowerCount, 800);
+
+                    deltaElement.textContent = followerDelta > 0 ? `+${followerDelta}` : `${followerDelta}`;
+                    deltaElement.classList.add('show');
+                    deltaElement.classList.add(isPositive ? 'positive' : 'negative');
+                    followerElement.classList.add(isPositive ? 'animate-positive' : 'animate-negative');
+
+                    setTimeout(() => {
+                        deltaElement.classList.remove('show', 'positive', 'negative');
+                        followerElement.classList.remove('animate-positive', 'animate-negative');
+                    }, 3000);
+                }
+
+                // Animate following count if changed
+                const followingDelta = newFollowingCount - currentFollowingCount;
+                if (followingDelta !== 0) {
+                    const followingElement = document.getElementById("followingCount");
+                    const deltaElement = document.getElementById("followingDelta");
+                    const isPositive = followingDelta > 0;
+
+                    animateCounter(followingElement, currentFollowingCount, newFollowingCount, 800);
+
+                    deltaElement.textContent = followingDelta > 0 ? `+${followingDelta}` : `${followingDelta}`;
+                    deltaElement.classList.add('show');
+                    deltaElement.classList.add(isPositive ? 'positive' : 'negative');
+                    followingElement.classList.add(isPositive ? 'animate-positive' : 'animate-negative');
+
+                    setTimeout(() => {
+                        deltaElement.classList.remove('show', 'positive', 'negative');
+                        followingElement.classList.remove('animate-positive', 'animate-negative');
+                    }, 3000);
+                }
+            } catch (err) {
+                console.error("Polling error:", err);
+            }
+        }
+
+        // Start polling when page loads
+        function startPolling() {
+            if (pollingInterval) {
+                clearInterval(pollingInterval);
+            }
+            pollingInterval = setInterval(pollForUpdates, 5000); // Poll every 5 seconds
+        }
+
+        // Stop polling (useful for cleanup)
+        function stopPolling() {
+            if (pollingInterval) {
+                clearInterval(pollingInterval);
+                pollingInterval = null;
+            }
+        }
+
+        /* COMMENTED OUT - loadWatched function
+        async function loadWatched() {
+            try {
+                const res = await fetch("/api/watched");
+                const movies = await res.json();
+
+                const grid = document.getElementById("watched-grid");
+                grid.innerHTML = "";
+
+                document.getElementById("total-entries").textContent = `TOTAL ENTRIES: ${movies.length}`;
+
+                if (movies.length === 0) {
+                    grid.innerHTML = `<p class="empty-msg">You haven't watched any movies yet.</p>`;
+                    return;
+                }
+
+                movies.forEach((movie, index) => {
+                    const entry = document.createElement("a");
+                    entry.href = `/update-movie/${movie.watched_id}`;
+                    entry.className = "watched-entry";
+
+                    const entryNumber = String(movies.length - index).padStart(2, '0');
+
+                    entry.innerHTML = `
+                        <div class="watched-poster">
+                            <img src="${movie.poster_full_url}" alt="${movie.movie_title}">
+                        </div>
+                        <div class="watched-entry-number">ENTRY_${String(index + 1).padStart(3, '0')}</div>
+                        <div class="watched-info">
+                            <div class="rating-display">${movie.user_rating}</div>
+                            <div class="rating-label">RATING</div>
+                            <h3 class="movie-title">${movie.movie_title}</h3>
+                        </div>
+                    `;
+
+                    grid.appendChild(entry);
+                });
+            } catch (err) {
+                console.error("Error loading watched movies:", err);
+            }
+        }
+        END COMMENTED OUT */
+
+        // Load dashboard
+        loadDashboard();
+        // loadWatched(); // COMMENTED OUT
+
+        // Start polling for real-time updates
+        startPolling();
+    </script>
+
+    <!-- Followers/Following Modal -->
+    <div class="modal-overlay" id="followModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title" id="modalTitle">Followers</h2>
+                <button class="modal-close" id="modalClose">Close</button>
+            </div>
+            <div class="modal-body" id="modalBody">
+                <!-- User list will be dynamically populated -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Modal functionality
+        const followModal = document.getElementById('followModal');
+        const modalTitle = document.getElementById('modalTitle');
+        const modalBody = document.getElementById('modalBody');
+        const modalClose = document.getElementById('modalClose');
+        let currentUserId = null;
+        let modalWasOpen = false;
+        let showAnimations = false;
+
+        // Get current user ID from session
+        async function getCurrentUserId() {
+            try {
+                const response = await fetch('/api/dashboard');
+                const data = await response.json();
+                console.log('Current user data:', data.user);
+                const userId = data.user.user_id;
+                console.log('Current user ID:', userId);
+                return userId;
+            } catch (error) {
+                console.error('Error getting current user ID:', error);
+                return null;
+            }
+        }
+
+        // Open followers modal
+        document.getElementById('followersBox').addEventListener('click', async () => {
+            if (!currentUserId) currentUserId = await getCurrentUserId();
+            modalWasOpen = true;
+            showFollowModal('followers', currentUserId);
+        });
+
+        // Open following modal
+        document.getElementById('followingBox').addEventListener('click', async () => {
+            if (!currentUserId) currentUserId = await getCurrentUserId();
+            modalWasOpen = true;
+            showFollowModal('following', currentUserId);
+        });
+
+        // Close modal
+        modalClose.addEventListener('click', () => {
+            followModal.classList.remove('active');
+            if (modalWasOpen) {
+                showAnimations = true;
+                loadDashboard();
+                modalWasOpen = false;
+            }
+        });
+
+        // Close modal on overlay click
+        followModal.addEventListener('click', (e) => {
+            if (e.target === followModal) {
+                followModal.classList.remove('active');
+                if (modalWasOpen) {
+                    showAnimations = true;
+                    loadDashboard();
+                    modalWasOpen = false;
+                }
+            }
+        });
+
+        // Navigate to watched page with 10/10 filter applied
+        function goToWatchedWith10Rating() {
+            sessionStorage.setItem('watchedFilter', 'rating-10');
+            window.location.href = '/watched';
+        }
+
+        // Show follow modal
+        async function showFollowModal(type, userId) {
+            console.log(`Opening ${type} modal for user ${userId}`);
+            modalTitle.textContent = type === 'followers' ? 'Followers' : 'Following';
+            modalBody.innerHTML = '<div class="empty-list">Loading...</div>';
+            followModal.classList.add('active');
+
+            try {
+                const url = `/api/user/${userId}/${type}`;
+                console.log(`Fetching: ${url}`);
+                const response = await fetch(url);
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    console.error(`Error response:`, errorData);
+                    throw new Error(errorData.details || errorData.error || 'Failed to fetch');
+                }
+
+                const users = await response.json();
+                console.log(`Received ${users.length} users:`, users);
+
+                if (users.length === 0) {
+                    modalBody.innerHTML = `<div class="empty-list">No ${type} yet</div>`;
+                    return;
+                }
+
+                modalBody.innerHTML = users.map(user => `
+                    <div class="user-item">
+                        <div class="user-item-left">
+                            <img
+                                src="${user.profile_picture ? `/uploads/profile_pictures/${user.profile_picture}` : '/TrueReview_logo/Icon_BW.png'}"
+                                alt="${user.username}"
+                                class="user-avatar"
+                            />
+                            <div class="user-username">${user.username}</div>
+                        </div>
+                        ${user.user_id !== currentUserId ? `
+                            <button
+                                class="${user.is_following ? 'following-btn' : 'follow-btn'}"
+                                onclick="toggleFollow(${user.user_id}, this)"
+                                data-following="${user.is_following}"
+                            >
+                                ${user.is_following ? 'Following' : 'Follow'}
+                            </button>
+                        ` : ''}
+                    </div>
+                `).join('');
+            } catch (error) {
+                console.error(`Error loading ${type}:`, error);
+                modalBody.innerHTML = `<div class="empty-list">Failed to load ${type}: ${error.message}</div>`;
+            }
+        }
+
+        // Toggle follow/unfollow
+        async function toggleFollow(userId, button) {
+            const isFollowing = button.getAttribute('data-following') === 'true';
+            const endpoint = isFollowing ? 'unfollow' : 'follow';
+
+            try {
+                const response = await fetch(`/api/user/${endpoint}/${userId}`, {
+                    method: 'POST'
+                });
+
+                if (response.ok) {
+                    // Update button state
+                    button.setAttribute('data-following', !isFollowing);
+                    button.className = isFollowing ? 'follow-btn' : 'following-btn';
+                    button.textContent = isFollowing ? 'Follow' : 'Following';
+                    // Dashboard will refresh when modal closes, triggering animation
+                }
+            } catch (error) {
+                console.error('Error toggling follow:', error);
+            }
+        }
+
+        // Initialize current user ID
+        (async () => {
+            currentUserId = await getCurrentUserId();
+        })();
+    </script>
+
+</body>
+</html>

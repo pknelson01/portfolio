@@ -1,0 +1,271 @@
+/* PAGE BACKGROUND */
+body {
+    background: #f8f7f2;
+    color: black;
+    font-family: "Times New Roman", serif;
+}
+
+/* DASHBOARD CONTENT */
+.dashboard-container {
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+/* HEADER SECTION */
+.profile-header {
+    position: relative;
+    height: 260px;
+    background: #ddd;
+    border-bottom: 2px solid #bbb;
+
+    /* Ensure profile pic can overlap */
+    overflow: visible;
+}
+
+.background-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.background-placeholder {
+    width: 100%;
+    height: 100%;
+    background: #ccc;
+}
+
+/* PROFILE PIC — MUST FLOAT OVER HEADER (LinkedIn-style) */
+.profile-pic-wrapper {
+    position: absolute !important;
+    bottom: -65px !important;
+    left: 40px !important;
+
+    width: 130px;
+    height: 130px;
+
+    padding: 5px;
+    border-radius: 50%;
+    background: white;
+
+    /* border: 3px solid #ffd966; */
+
+    z-index: 20 !important; /* ensure it's on top */
+}
+
+.profile-pic-wrapper .edit-overlay {
+    border-radius: 50%;
+}
+
+.profile-pic {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.profile-placeholder {
+    width: 100%;
+    height: 100%;
+    background: #444;
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 32px;
+    border-radius: 50%;
+}
+
+/* FLEX LAYOUT: PROFILE INFO LEFT + LAST WATCHED RIGHT */
+.profile-flex-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 60px;
+
+    /* margin-top: 80px; /* compensates for floating profile pic */
+}
+
+/* PROFILE INFO */
+.profile-info {
+    flex: 1;
+    padding-left: 40px;
+}
+
+.username {
+    font-size: 40px;
+    font-weight: bold;
+    margin-top: 6px !important;
+    margin-bottom: 6px !important;
+}
+
+.user-title {
+    font-size: 18px;
+    color: gray;
+    font-style: italic;
+    margin-top: 2px !important;
+    margin-bottom: 6px !important;
+}
+
+.user-bio {
+    font-size: 18px;
+    line-height: 1;
+    margin-top: 6px !important;
+    margin-bottom: 6px !important;
+}
+
+.follow-stats {
+    font-size: 16px;
+    margin-top: 6px !important;
+    margin-bottom: 6px !important;
+}
+
+.movie-stats p {
+    font-size: 16px;
+    margin-top: 2px !important;
+    margin-bottom: 2px !important;
+}
+
+.favorite {
+    margin-top: 2px !important;
+    margin-bottom: 2px !important;
+    font-size: 16px;
+}
+
+.favorite span {
+    color: #0a66c2;
+    font-weight: bold;
+    margin-top: 2px !important;
+    margin-bottom: 2px !important;
+}
+
+/* LAST WATCHED (RIGHT COLUMN) */
+.last-watched {
+    width: 260px;
+    text-align: center;
+}
+
+.last-poster {
+    width: 102px;
+    border-radius: 12px;
+    margin-bottom: 15px;
+    border: 3px solid #0a66c2;
+}
+
+.last-title {
+    font-size: 18px;
+    font-weight: bold;
+    margin-top: 10px;
+}
+
+.rating-line {
+    color: #444;
+    font-size: 16px;
+}
+
+
+/* -----------------------------------------
+   PROFILE PIC EDIT OVERLAY (hover dim + pencil)
+------------------------------------------ */
+
+.pfp-edit-zone {
+    position: relative;
+    cursor: pointer;
+}
+
+.pfp-edit-zone:hover .edit-overlay {
+    opacity: 1;
+}
+
+.edit-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0,0,0,0.45);
+    opacity: 0;
+    transition: opacity 0.25s ease;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: inherit;
+}
+
+.edit-overlay i {
+    font-size: 32px;
+    color: white;
+}
+
+
+
+/* -----------------------------------------
+   BACKGROUND HEADER HOVER OVERLAY
+------------------------------------------ */
+
+.bg-edit-zone {
+    position: relative;
+}
+
+.bg-edit-overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    background: rgba(0,0,0,0.35);
+    opacity: 0;
+    transition: opacity 0.25s ease;
+
+    border-radius: inherit;
+
+    /* prevent overlay from intercepting clicks unless visible */
+    pointer-events: none;
+}
+
+/* Show overlay only on hover */
+.bg-edit-zone:hover > .bg-edit-overlay {
+    opacity: 1;
+    pointer-events: auto; /* enables click when visible */
+}
+
+.bg-edit-overlay i {
+    font-size: 42px;
+    color: white;
+    pointer-events: none; /* icon shouldn’t block clicking */
+}
+
+
+
+/* ----------------------------------------------------------
+   FIX: Prevent background overlay from activating on PFP hover
+----------------------------------------------------------- */
+
+/* Do NOT trigger background hover when pointer is over PFP */
+.pfp-edit-zone:hover {
+    pointer-events: auto;
+}
+
+/* Disable background overlay whenever PFP is hovered */
+.pfp-edit-zone:hover ~ .bg-edit-overlay {
+    opacity: 0 !important;
+    pointer-events: none !important;
+}
+
+
+/* -----------------------------------------
+   LINKEDIN-STYLE CONTENT CARD (Option A)
+------------------------------------------ */
+.content-card {
+    background: white;
+    border-radius: 12px;
+    padding: 40px;
+
+    /* space between header and card */
+    margin-top: 10px;
+
+    box-shadow: 0 4px 18px rgba(0,0,0,0.12);
+    position: relative;
+}
+
+/* Ensure spacing looks good with floating profile picture */
+.content-card .profile-info {
+    margin-top: 60px;
+}

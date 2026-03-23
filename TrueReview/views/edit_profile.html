@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TrueReview - Edit Profile</title>
+    <link rel="icon" href="../TrueReview_logo/Icon_BW.png" type="image/png">
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;600;700&family=Anonymous+Pro:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --truereview: #525252;
+            --steel: #A8A8A8;
+            --white: #FFFFFF;
+            --charcoal: #2B2B2B;
+            --off-white: #E8E8E8;
+        }
+
+        body {
+            font-family: 'Anonymous Pro', monospace;
+            background: var(--truereview);
+            color: var(--off-white);
+            line-height: 1.5;
+            position: relative;
+            min-height: 100vh;
+            padding-top: 95px; /* Header height (55px) + tab bar (40px) */
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image:
+                repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.03) 2px, rgba(0,0,0,0.03) 4px),
+                repeating-linear-gradient(90deg, transparent, transparent 2px, rgba(0,0,0,0.03) 2px, rgba(0,0,0,0.03) 4px);
+            pointer-events: none;
+            z-index: 100;
+        }
+
+        .grid-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image:
+                linear-gradient(rgba(255, 255, 255, 0.1) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.1) 1px, transparent 1px);
+            background-size: 100px 100px;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .container {
+            position: relative;
+            z-index: 1;
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        .header-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            width: 100%;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        .header-bar {
+            background: var(--white);
+            border-bottom: 4px solid var(--charcoal);
+            padding: 0;
+            display: grid;
+            grid-template-columns: 120px 1fr 120px;
+            height: 55px;
+        }
+
+        .logo-section {
+            background: var(--white);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .logo {
+            font-family: 'Oswald', sans-serif;
+            font-size: 26px;
+            font-weight: 700;
+            color: var(--charcoal);
+            letter-spacing: -2px;
+            text-decoration: none;
+        }
+
+        .center-info {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 40px;
+            position: relative;
+            gap: 20px;
+        }
+
+        .site-title {
+            font-family: 'Oswald', sans-serif;
+            font-size: 14px;
+            color: var(--charcoal);
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            white-space: nowrap;
+        }
+
+        .header-search {
+            display: flex;
+            align-items: center;
+        }
+
+        .search-btn {
+            background: transparent;
+            border: 1px solid var(--charcoal);
+            color: var(--charcoal);
+            padding: 6px 12px;
+            font-family: 'Oswald', sans-serif;
+            font-size: 10px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .search-btn:hover {
+            background: var(--charcoal);
+            color: var(--white);
+            border-color: var(--charcoal);
+        }
+
+        .status-text {
+            position: absolute;
+            right: 20px;
+            font-size: 9px;
+            color: var(--charcoal);
+            letter-spacing: 2px;
+        }
+
+        .status-section {
+            background: var(--white);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border-left: 2px solid var(--charcoal);
+            position: relative;
+            padding: 8px;
+        }
+
+        .logout-btn {
+            background: transparent;
+            border: 1px solid var(--charcoal);
+            color: var(--charcoal);
+            padding: 6px 12px;
+            font-family: 'Oswald', sans-serif;
+            font-size: 10px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .logout-btn:hover {
+            background: var(--charcoal);
+            color: var(--white);
+            border-color: var(--charcoal);
+        }
+
+        .tab-bar {
+            background: var(--charcoal);
+            border-bottom: 2px solid var(--white);
+            height: 40px;
+            display: flex;
+            align-items: stretch;
+        }
+
+        .tab {
+            flex: 1;
+            background: rgba(0, 0, 0, 0.3);
+            border-right: 2px solid var(--white);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Oswald', sans-serif;
+            font-size: 12px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--steel);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            text-decoration: none;
+        }
+
+        .tab.active {
+            background: var(--white);
+            color: var(--charcoal);
+        }
+
+        .tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--white);
+        }
+
+        .tab:hover {
+            background: rgba(255, 255, 255, 0.2);
+            color: var(--white);
+        }
+
+        .main-content {
+            padding: 60px;
+        }
+
+        .profile-section {
+            background: var(--charcoal);
+            border: 2px solid var(--white);
+            padding: 0;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .profile-header {
+            background: var(--white);
+            padding: 30px;
+            border-bottom: 2px solid var(--charcoal);
+            position: relative;
+        }
+
+        .profile-label {
+            font-family: 'Oswald', sans-serif;
+            font-size: 14px;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: var(--charcoal);
+            font-weight: 600;
+        }
+
+        .profile-body {
+            padding: 40px;
+        }
+
+        .profile-picture-container {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 30px;
+        }
+
+        .profile-picture {
+            width: 200px;
+            height: 200px;
+            border: 3px solid var(--white);
+            background: var(--steel);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Oswald', sans-serif;
+            font-size: 72px;
+            font-weight: 700;
+            color: var(--charcoal);
+            position: relative;
+            cursor: pointer;
+            overflow: hidden;
+        }
+
+        .profile-picture img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .edit-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 10px;
+            text-align: center;
+            color: var(--white);
+            font-size: 18px;
+        }
+
+        .form-group {
+            margin-bottom: 30px;
+        }
+
+        .form-label {
+            font-family: 'Oswald', sans-serif;
+            font-size: 12px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--steel);
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        .form-input,
+        .form-textarea,
+        .form-select {
+            width: 100%;
+            font-family: 'Anonymous Pro', monospace;
+            background: rgba(0, 0, 0, 0.3);
+            border: 2px solid var(--steel);
+            color: var(--off-white);
+            padding: 15px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .form-input:focus,
+        .form-textarea:focus,
+        .form-select:focus {
+            outline: none;
+            border-color: var(--white);
+            background: rgba(0, 0, 0, 0.5);
+        }
+
+        .form-textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 20px;
+            margin-top: 40px;
+        }
+
+        .save-btn,
+        .cancel-btn {
+            flex: 1;
+            font-family: 'Oswald', sans-serif;
+            font-size: 16px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            padding: 18px;
+            border: 2px solid var(--white);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            text-align: center;
+            display: block;
+        }
+
+        .save-btn {
+            background: var(--white);
+            color: var(--charcoal);
+        }
+
+        .save-btn:hover {
+            background: transparent;
+            color: var(--white);
+            transform: translateY(-2px);
+        }
+
+        .cancel-btn {
+            background: transparent;
+            color: var(--white);
+        }
+
+        .cancel-btn:hover {
+            background: var(--white);
+            color: var(--charcoal);
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+    <div class="grid-overlay"></div>
+
+    <div class="header-container">
+        <div class="header-bar">
+            <div class="logo-section">
+                <a href="/dashboard" class="logo">TrueReview</a>
+            </div>
+            <div class="center-info">
+                <div class="site-title">Film Analysis Platform</div>
+                <div class="header-search">
+                    <a href="/add-movie" class="search-btn">Search</a>
+                </div>
+                <!-- <div class="status-text">SYSTEM: ONLINE</div> -->
+            </div>
+            <div class="status-section">
+                <form action="/logout" method="POST">
+                    <button class="logout-btn">Logout</button>
+                </form>
+            </div>
+        </div>
+
+        <div class="tab-bar">
+            <span class="tab">FOLLOWING (coming soon...)</span>
+            <a href="/watched" class="tab">WATCHED</a>
+            <a href="/watchlist" class="tab">WATCHLIST</a>
+            <span class="tab">TOP-N (coming soon...)</span>
+            <a href="/dashboard" class="tab" id="dashboard-tab"></a>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <div class="profile-section">
+            <div class="profile-header">
+                <div class="profile-label">Edit Profile</div>
+            </div>
+            <div class="profile-body">
+                <div class="profile-picture-container">
+                    <div class="profile-picture" onclick="triggerFileInput('pfp-input'); event.stopPropagation();">
+                        <span id="profile-initials"></span>
+                        <img id="profile-pic" style="display:none;" />
+                        <div class="edit-overlay">
+                            <i class="fa-solid fa-pencil"></i>
+                        </div>
+                    </div>
+                    <input id="pfp-input" type="file" accept="image/*" style="display:none;">
+                </div>
+
+                <form id="edit-form" action="/update-profile" method="POST">
+                    <div class="form-group">
+                        <label class="form-label" for="username">Username</label>
+                        <input type="text" id="username" name="username" class="form-input" required maxlength="20">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="display_name">Display Name</label>
+                        <input type="text" id="display_name" name="display_name" class="form-input" required maxlength="20">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="title">Title</label>
+                        <input type="text" id="title" name="title" class="form-input" placeholder="e.g. Film Enthusiast">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="bio">Bio</label>
+                        <textarea id="bio" name="bio" class="form-textarea" placeholder="Tell us about yourself..."></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="favorite_movie">Favorite Movie</label>
+                        <select id="favorite_movie" name="favorite_movie" class="form-select">
+                            <option value="">Select a favorite movie</option>
+                        </select>
+                    </div>
+
+                    <div class="button-group">
+                        <button type="submit" class="save-btn">Save Changes</button>
+                        <a href="/dashboard" class="cancel-btn">Cancel</a>
+                    </div>
+                </form>
+
+                <div class="button-group" style="margin-top: 20px;">
+                    <a href="/change-password" class="cancel-btn">Change Password</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function triggerFileInput(id) {
+            document.getElementById(id).click();
+        }
+
+        // Upload new profile picture
+        document.getElementById("pfp-input").addEventListener("change", async (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            const formData = new FormData();
+            formData.append("file", file);
+
+            const res = await fetch("/api/upload/profile-picture", {
+                method: "POST",
+                body: formData
+            });
+
+            if (res.ok) {
+                const data = await res.json();
+                const img = document.getElementById("profile-pic");
+                img.src = `/uploads/profile_pictures/${data.filename}`;
+                img.style.display = "block";
+                document.getElementById("profile-initials").style.display = "none";
+            }
+        });
+
+        // Load current profile data
+        async function loadProfile() {
+            const res = await fetch("/api/dashboard");
+            const data = await res.json();
+
+            // Set profile picture
+            if (data.user.profile_picture) {
+                const img = document.getElementById("profile-pic");
+                img.src = `/uploads/profile_pictures/${data.user.profile_picture}`;
+                img.style.display = "block";
+                document.getElementById("profile-initials").style.display = "none";
+            } else {
+                const initials = data.user.display_name.substring(0, 2).toUpperCase();
+                document.getElementById("profile-initials").textContent = initials;
+            }
+
+            // Set form values
+            document.getElementById("username").value = data.user.username || "";
+            document.getElementById("display_name").value = data.user.display_name || "";
+            document.getElementById("title").value = data.user.title || "";
+            document.getElementById("bio").value = data.user.bio || "";
+
+            // Update dashboard tab with display_name
+            document.getElementById("dashboard-tab").textContent = data.user.display_name.toUpperCase();
+
+            // Load watched movies for favorite selection
+            const watchedRes = await fetch("/api/watched");
+            const movies = await watchedRes.json();
+
+            const select = document.getElementById("favorite_movie");
+            movies.forEach(movie => {
+                const option = document.createElement("option");
+                option.value = movie.movie_id;
+                option.textContent = movie.movie_title;
+                if (data.user.favorite_movie && data.user.favorite_movie == movie.movie_id) {
+                    option.selected = true;
+                }
+                select.appendChild(option);
+            });
+        }
+
+        loadProfile();
+    </script>
+</body>
+</html>

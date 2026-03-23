@@ -1,0 +1,42 @@
+# True Review (Don't attempt set up quite yet, there will be a lot of issues)
+---
+
+  TrueReview is a minimalist movie review and social networking platform that combines film critique with community engagement. Users can search for movies, rate them on a precise 0.0-10.0 scale, write detailed reviews, and curate their personal watched list with powerful filtering capabilities. The platform features a distinctive black-and-white aesthetic with industrial grid overlays, creating a professional environment focused on authentic film analysis rather than flashy visuals. Each user profile displays comprehensive statistics including total movies watched, average rating, 10/10 ratings, follower/following counts, and a unique "Popcorn Kernels" reward system that gamifies the reviewing experience.
+
+  Built with Node.js, Express, and PostgreSQL, TrueReview offers real-time social features including a follower system with live updates via 5-second polling intervals. Animated delta indicators provide instant feedback when follower counts change or popcorn kernels are earned, creating an engaging user experience despite the minimalist design. Users can customize their profiles with pictures, bios, and titles, while the platform automatically tracks their last watched movie and favorite film. The application supports multiple concurrent sessions, features session-based authentication, and includes advanced filtering options for sorting watched movies by rating ranges, making it easy to revisit your highest-rated films or identify movies you might want to re-evaluate.
+
+
+
+## Setup Instructions:
+
+***node(v24.11.1)***
+***npm(11.7.0)***
+
+1. Click on the <> Code dropdown
+    - *Select "Download Zip"*
+2. Create a folder on your desktop titled **TrueReview** (exactly as shown).
+3. Double click the zip in your browsers downloads
+4. Find the folder in your downloads folder and move to your new folder on the desktop
+5. Open your terminal
+    - If on mac 
+        - (**cmd + space**) and type in **terminal.app** and press enter
+    - If on windows
+        - Press the **Windows Key** and type either **Command Prompt** or **PowerShell** and press enter. 
+6. Copy and paste the following Command
+    - *cd desktop/TrueReview*
+7. Copy and paste the following Command
+    - *curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash*
+8. Close the terminal and reopen. Then copy and paste the following
+    - *cd desktop/TrueReview*
+9. Run the following Command
+    - *nvm install 24.11.1*
+10. run the following Command
+    - *nvm use 24.11.1*
+11. Verify you are using the correct versions (below "Setup Instructions:") with
+    - *node -v*
+    - *npm -v*
+12. Run the following Command
+    - *npm start*
+13. Open up Google Chrome and type the following
+    - *localhost:3000*
+14. You are now good to create an account and use **TrueReview**
