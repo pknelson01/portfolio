@@ -4,6 +4,7 @@
 
 import express from "express";
 import session from "express-session";
+import connectPgSimple from "connect-pg-simple";
 import path from "path";
 import multer from "multer";
 import pg from "pg";
@@ -20,7 +21,7 @@ const __dirname = path.dirname(__filename);
 // ----------------------------------------------------
 // TMDb API Configuration
 // ----------------------------------------------------
-const TMDB_API_KEY = "9ca5e832beb93b3371c78a5fbc2280dc";
+const TMDB_API_KEY = process.env.TMDB_API_KEY;
 
 // ----------------------------------------------------
 // Express Setup
@@ -32,31 +33,43 @@ app.use(express.json());
 // ----------------------------------------------------
 // Static Files
 // ----------------------------------------------------
-app.use("/public", express.static(path.join(__dirname, "TrueReview/public")));
-app.use("/portfolio", express.static(path.join(__dirname, "Portfolio")));
-app.use("/uploads", express.static(path.join(__dirname, "TrueReview/uploads")));
-app.use("/views", express.static(path.join(__dirname, "TrueReview/views")));
-app.use("/TrueReview_logo", express.static(path.join(__dirname, "TrueReview/TrueReview_logo")));
-
-// ----------------------------------------------------
-// Sessions
-// ----------------------------------------------------
-app.use(
-  session({
-    secret: "truereview_secret_123",
-    resave: false,
-    saveUninitialized: false,
-  })
-);
+app.use("/public", express.static(path.join(__dirname, "public")));
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+app.use("/views", express.static(path.join(__dirname, "views")));
+app.use("/TrueReview_logo", express.static(path.join(__dirname, "TrueReview_logo")));
 
 // ----------------------------------------------------
 // PostgreSQL Setup
 // ----------------------------------------------------
+
 const db = new pg.Pool({
-  connectionString:
-    "postgresql://truereview_admin:TrNMyIlmWQqxTBtiownOkjAPiNGT6bK6@dpg-d4qhtuh5pdvs738o9d90-a.oregon-postgres.render.com/truereview",
+  connectionString: process.env.DATABASE_URL,
   ssl: { rejectUnauthorized: false },
 });
+
+// ----------------------------------------------------
+// Sessions
+// ----------------------------------------------------
+const PgSession = connectPgSimple(session);
+
+app.set("trust proxy", 1);
+
+app.use(
+  session({
+    store: new PgSession({
+      pool: db,
+      tableName: "session",
+    }),
+    secret: process.env.SESSION_SECRET || "truereview_fallback_secret_123",
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+      maxAge: 1000 * 60 * 60 * 24 * 7,
+    },
+  })
+);
 
 // ----------------------------------------------------
 // Multer (File Uploads)
@@ -181,7 +194,7 @@ async function ensureMovieInDatabase(movie_id) {
       if (titleChanged && yearChanged) {
         console.log(`[MOVIE DB] ⚠️  TMDB ID REUSE DETECTED for ${movie_id}!`);
         console.log(`[MOVIE DB] Old: "${oldTitle}" (${oldReleaseDate})`);
-        console.log(`[MOVIE DB] New: "${newTitle}" (${newReleaseDate})`);
+        console.log(`[MOVIE DB] New: "${movieData.title}" (${movieData.release_date})`);
         console.log(`[MOVIE DB] Deleting old movie from all users' lists...`);
 
         // Delete from all tables (this will cascade to watched_list and watch_list if foreign keys are set)
@@ -284,8 +297,8 @@ async function ensureMovieInDatabase(movie_id) {
 
     // Determine if this was an ID reuse scenario
     const wasIdReuse = movieExists && titlesDifferSignificantly(oldTitle, movieData.title) &&
-                       oldReleaseDate && movieData.release_date &&
-                       Math.abs(new Date(oldReleaseDate).getFullYear() - new Date(movieData.release_date).getFullYear()) > 1;
+      oldReleaseDate && movieData.release_date &&
+      Math.abs(new Date(oldReleaseDate).getFullYear() - new Date(movieData.release_date).getFullYear()) > 1;
 
     if (wasIdReuse) {
       console.log(`[MOVIE DB] ✅ Movie ${movie_id} (${movieData.title}) successfully added after ID reuse cleanup`);
@@ -313,27 +326,15 @@ async function ensureMovieInDatabase(movie_id) {
 // ============================================================================
 
 app.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname, "Portfolio/main.html"));
-});
-
-app.get("/projects", (req, res) => {
-  res.sendFile(path.join(__dirname, "Portfolio/projects.html"));
-});
-
-app.get("/contact", (req, res) => {
-  res.sendFile(path.join(__dirname, "Portfolio/contact.html"));
-});
-
-app.get("/truereview", (req, res) => {
-  res.sendFile(path.join(__dirname, "TrueReview/views/index.html"));
+  res.sendFile(path.join(__dirname, "views/index.html"));
 });
 
 app.get("/login", (req, res) => {
-  res.sendFile(path.join(__dirname, "TrueReview/views/login.html"));
+  res.sendFile(path.join(__dirname, "views/login.html"));
 });
 
 app.get("/signup", (req, res) => {
-  res.sendFile(path.join(__dirname, "TrueReview/views/signup.html"));
+  res.sendFile(path.join(__dirname, "views/signup.html"));
 });
 
 // SIGNUP - CREATE NEW ACCOUNT
@@ -425,16 +426,6 @@ app.post("/login", async (req, res) => {
   res.redirect("/welcome");
 });
 
-app.get("/guest-login", async (req, res) => {
-  const result = await db.query("SELECT * FROM users WHERE email = $1", ["guest@truereview.com"]);
-  if (result.rows.length === 0) return res.redirect("/login?error=1");
-  const user = result.rows[0];
-  const passwordMatch = await bcrypt.compare("guest", user.password);
-  if (!passwordMatch) return res.redirect("/login?error=1");
-  req.session.user_id = user.user_id;
-  res.redirect("/welcome");
-});
-
 app.post("/logout", (req, res) => {
   const user_id = req.session.user_id;
   console.log(`[LOGOUT] User logged out - ID: ${user_id}`);
@@ -442,39 +433,39 @@ app.post("/logout", (req, res) => {
 });
 
 app.get("/welcome", requireLogin, (req, res) => {
-  res.sendFile(path.join(__dirname, "TrueReview/views/welcome.html"));
+  res.sendFile(path.join(__dirname, "views/welcome.html"));
 });
 
 app.get("/dashboard", requireLogin, (req, res) => {
-  res.sendFile(path.join(__dirname, "TrueReview/views/dashboard.html"));
+  res.sendFile(path.join(__dirname, "views/dashboard.html"));
 });
 
 app.get("/watched", requireLogin, (req, res) => {
-  res.sendFile(path.join(__dirname, "TrueReview/views/watched.html"));
+  res.sendFile(path.join(__dirname, "views/watched.html"));
 });
 
 app.get("/watchlist", requireLogin, (req, res) => {
-  res.sendFile(path.join(__dirname, "TrueReview/views/watchlist.html"));
+  res.sendFile(path.join(__dirname, "views/watchlist.html"));
 });
 
 app.get("/edit-profile", requireLogin, (req, res) => {
-  res.sendFile(path.join(__dirname, "TrueReview/views/edit_profile.html"));
+  res.sendFile(path.join(__dirname, "views/edit_profile.html"));
 });
 
 app.get("/change-password", requireLogin, (req, res) => {
-  res.sendFile(path.join(__dirname, "TrueReview/views/change_password.html"));
+  res.sendFile(path.join(__dirname, "views/change_password.html"));
 });
 
 app.get("/rate-movie/:movie_id", requireLogin, (req, res) => {
-  res.sendFile(path.join(__dirname, "TrueReview/views/rate_movie.html"));
+  res.sendFile(path.join(__dirname, "views/rate_movie.html"));
 });
 
 app.get("/update-movie/:watched_id", requireLogin, (req, res) => {
-  res.sendFile(path.join(__dirname, "TrueReview/views/update_movie.html"));
+  res.sendFile(path.join(__dirname, "views/update_movie.html"));
 });
 
 app.get("/quiz", (req, res) => {
-  res.sendFile(path.join(__dirname, "TrueReview/views/quiz.html"));
+  res.sendFile(path.join(__dirname, "views/quiz.html"));
 });
 
 // ============================================================================
@@ -954,12 +945,12 @@ app.post("/change-password", requireLogin, async (req, res) => {
 
 // Serve Add Movie Page
 app.get("/add-movie", requireLogin, (req, res) => {
-  res.sendFile(path.join(__dirname, "TrueReview/views/add_movies.html"));
+  res.sendFile(path.join(__dirname, "views/add_movies.html"));
 });
 
 // Serve Search Page (same as add movie)
 app.get("/search", requireLogin, (req, res) => {
-  res.sendFile(path.join(__dirname, "TrueReview/views/add_movies.html"));
+  res.sendFile(path.join(__dirname, "views/add_movies.html"));
 });
 
 // SEARCH MOVIES - Using TMDb API
@@ -1390,7 +1381,7 @@ app.post("/api/user/unfollow/:user_id", requireLogin, async (req, res) => {
 // ============================================================================
 // START SERVER
 // ============================================================================
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 app.listen(PORT, () =>
   console.log(`TrueReview running at http://localhost:${PORT}`)
 );
