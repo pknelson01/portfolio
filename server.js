@@ -326,15 +326,27 @@ async function ensureMovieInDatabase(movie_id) {
 // ============================================================================
 
 app.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname, "views/index.html"));
+  res.sendFile(path.join(__dirname, "Portfolio/main.html"));
+});
+
+app.get("/projects", (req, res) => {
+  res.sendFile(path.join(__dirname, "Portfolio/projects.html"));
+});
+
+app.get("/contact", (req, res) => {
+  res.sendFile(path.join(__dirname, "Portfolio/contact.html"));
+});
+
+app.get("/truereview", (req, res) => {
+  res.sendFile(path.join(__dirname, "TrueReview/views/index.html"));
 });
 
 app.get("/login", (req, res) => {
-  res.sendFile(path.join(__dirname, "views/login.html"));
+  res.sendFile(path.join(__dirname, "TrueReview/views/login.html"));
 });
 
 app.get("/signup", (req, res) => {
-  res.sendFile(path.join(__dirname, "views/signup.html"));
+  res.sendFile(path.join(__dirname, "TrueReview/views/signup.html"));
 });
 
 // SIGNUP - CREATE NEW ACCOUNT
