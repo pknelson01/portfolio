@@ -33,10 +33,11 @@ app.use(express.json());
 // ----------------------------------------------------
 // Static Files
 // ----------------------------------------------------
-app.use("/public", express.static(path.join(__dirname, "public")));
-app.use("/uploads", express.static(path.join(__dirname, "uploads")));
-app.use("/views", express.static(path.join(__dirname, "views")));
-app.use("/TrueReview_logo", express.static(path.join(__dirname, "TrueReview_logo")));
+app.use("/public", express.static(path.join(__dirname, "TrueReview/public")));
+app.use("/uploads", express.static(path.join(__dirname, "TrueReview/uploads")));
+app.use("/views", express.static(path.join(__dirname, "TrueReview/views")));
+app.use("/TrueReview_logo", express.static(path.join(__dirname, "TrueReview/TrueReview_logo")));
+app.use("/portfolio", express.static(path.join(__dirname, "Portfolio")));
 
 // ----------------------------------------------------
 // PostgreSQL Setup
@@ -445,39 +446,39 @@ app.post("/logout", (req, res) => {
 });
 
 app.get("/welcome", requireLogin, (req, res) => {
-  res.sendFile(path.join(__dirname, "views/welcome.html"));
+  res.sendFile(path.join(__dirname, "TrueReview/views/welcome.html"));
 });
 
 app.get("/dashboard", requireLogin, (req, res) => {
-  res.sendFile(path.join(__dirname, "views/dashboard.html"));
+  res.sendFile(path.join(__dirname, "TrueReview/views/dashboard.html"));
 });
 
 app.get("/watched", requireLogin, (req, res) => {
-  res.sendFile(path.join(__dirname, "views/watched.html"));
+  res.sendFile(path.join(__dirname, "TrueReview/views/watched.html"));
 });
 
 app.get("/watchlist", requireLogin, (req, res) => {
-  res.sendFile(path.join(__dirname, "views/watchlist.html"));
+  res.sendFile(path.join(__dirname, "TrueReview/views/watchlist.html"));
 });
 
 app.get("/edit-profile", requireLogin, (req, res) => {
-  res.sendFile(path.join(__dirname, "views/edit_profile.html"));
+  res.sendFile(path.join(__dirname, "TrueReview/views/edit_profile.html"));
 });
 
 app.get("/change-password", requireLogin, (req, res) => {
-  res.sendFile(path.join(__dirname, "views/change_password.html"));
+  res.sendFile(path.join(__dirname, "TrueReview/views/change_password.html"));
 });
 
 app.get("/rate-movie/:movie_id", requireLogin, (req, res) => {
-  res.sendFile(path.join(__dirname, "views/rate_movie.html"));
+  res.sendFile(path.join(__dirname, "TrueReview/views/rate_movie.html"));
 });
 
 app.get("/update-movie/:watched_id", requireLogin, (req, res) => {
-  res.sendFile(path.join(__dirname, "views/update_movie.html"));
+  res.sendFile(path.join(__dirname, "TrueReview/views/update_movie.html"));
 });
 
 app.get("/quiz", (req, res) => {
-  res.sendFile(path.join(__dirname, "views/quiz.html"));
+  res.sendFile(path.join(__dirname, "TrueReview/views/quiz.html"));
 });
 
 // ============================================================================
@@ -957,12 +958,12 @@ app.post("/change-password", requireLogin, async (req, res) => {
 
 // Serve Add Movie Page
 app.get("/add-movie", requireLogin, (req, res) => {
-  res.sendFile(path.join(__dirname, "views/add_movies.html"));
+  res.sendFile(path.join(__dirname, "TrueReview/views/add_movies.html"));
 });
 
 // Serve Search Page (same as add movie)
 app.get("/search", requireLogin, (req, res) => {
-  res.sendFile(path.join(__dirname, "views/add_movies.html"));
+  res.sendFile(path.join(__dirname, "TrueReview/views/add_movies.html"));
 });
 
 // SEARCH MOVIES - Using TMDb API
