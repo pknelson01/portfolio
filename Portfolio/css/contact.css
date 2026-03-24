@@ -1,0 +1,122 @@
+.navbar {
+    position: relative;
+    z-index: 10;
+    width: 100%;
+    background: var(--charcoal);
+    border-bottom: 2px solid rgba(255, 255, 255, 0.15);
+    padding: 16px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-sizing: border-box;
+}
+
+.nav-links {
+    display: flex;
+    gap: 32px;
+}
+
+.main-content {
+    flex: 1;
+    position: relative;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 20px;
+}
+
+.contact-container {
+    background: var(--charcoal);
+    border: 4px solid var(--white);
+    padding: 60px 80px;
+    max-width: 560px;
+    width: 100%;
+    text-align: center;
+}
+
+.contact-title {
+    font-family: 'Oswald', sans-serif;
+    font-size: 48px;
+    font-weight: 700;
+    color: var(--white);
+    letter-spacing: -1px;
+    margin-bottom: 12px;
+}
+
+.contact-subtitle {
+    font-family: 'Oswald', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--steel);
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    margin-bottom: 32px;
+}
+
+.title-divider {
+    width: 50px;
+    height: 2px;
+    background: var(--white);
+    margin: 0 auto 36px;
+}
+
+.email-address {
+    font-size: 15px;
+    color: var(--off-white);
+    letter-spacing: 1px;
+    margin-bottom: 36px;
+}
+
+.btn-group {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.btn {
+    font-family: 'Oswald', sans-serif;
+    font-size: 14px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 16px 40px;
+    border: 2px solid var(--white);
+    cursor: pointer;
+    transition: all 0.25s ease;
+    text-decoration: none;
+    display: block;
+}
+
+.btn-primary {
+    background: var(--white);
+    color: var(--charcoal);
+}
+
+.btn-primary:hover {
+    background: transparent;
+    color: var(--white);
+}
+
+.btn-secondary {
+    background: transparent;
+    color: var(--steel);
+    border-color: var(--steel);
+}
+
+.btn-secondary:hover {
+    border-color: var(--white);
+    color: var(--white);
+}
+
+/* Footer */
+.footer {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+    padding: 20px;
+    font-family: 'Oswald', sans-serif;
+    font-size: 10px;
+    letter-spacing: 2px;
+    color: var(--steel);
+    text-transform: uppercase;
+}
