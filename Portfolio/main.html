@@ -205,25 +205,23 @@
 
         .hero-image-column {
             flex-shrink: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 0;
             position: relative;
         }
 
         .kenobi-img {
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%) translateY(10px);
             width: 26px;
             opacity: 0;
-            transform: translateY(10px);
             transition: opacity 0.35s ease, transform 0.35s ease;
-            display: block;
             pointer-events: none;
         }
 
         .kenobi-img.visible {
             opacity: 1;
-            transform: translateY(0);
+            transform: translateX(-50%) translateY(0);
         }
 
         .hero-image-wrap {
