@@ -80,8 +80,9 @@
     font-weight: 600;
     letter-spacing: 2px;
     text-transform: uppercase;
-    color: var(--charcoal);
-    background: var(--white);
+    color: #32c864;
+    background: rgba(50, 200, 100, 0.15);
+    border: 2px solid #32c864;
     padding: 4px 10px;
     white-space: nowrap;
     flex-shrink: 0;

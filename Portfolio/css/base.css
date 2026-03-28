@@ -52,8 +52,7 @@ body {
 }
 
 .nav-links {
-    display: flex;
-    gap: 32px;
+    display: none;
 }
 
 .brand {
@@ -84,7 +83,7 @@ body {
 
 /* Hamburger button */
 .hamburger-btn {
-    display: none;
+    display: flex;
     background: none;
     border: none;
     cursor: pointer;
@@ -135,7 +134,3 @@ body {
 .mobile-nav a:hover { background: rgba(255, 255, 255, 0.06); }
 .mobile-nav a.active { color: var(--white); }
 
-@media (max-width: 480px) {
-    .hamburger-btn { display: flex; }
-    .nav-links { display: none; }
-}
