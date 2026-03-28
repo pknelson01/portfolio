@@ -308,6 +308,40 @@
     color: var(--steel);
 }
 
+/* ── Responsive ── */
+@media (max-width: 768px) {
+    .navbar { padding: 14px 30px; }
+    .page { padding: 96px 24px 60px; gap: 24px; }
+    .section { padding: 36px 32px; }
+    .hero { padding: 36px 32px; }
+    .hero-inner { flex-direction: column-reverse; gap: 24px; }
+    .hero-image-wrap { width: 180px; height: 180px; }
+    .hero-name { font-size: 52px; }
+    .about-grid { grid-template-columns: 1fr; gap: 28px; }
+    .skills-grid { grid-template-columns: 1fr 1fr; }
+    .cta-strip { flex-direction: column; gap: 24px; padding: 36px 32px; text-align: center; }
+}
+
+@media (max-width: 480px) {
+    .navbar { padding: 12px 20px; }
+    .page { padding: 80px 16px 40px; gap: 16px; }
+    .section { padding: 28px 20px; }
+    .hero { padding: 28px 20px; }
+    .hero-inner { flex-direction: column-reverse; align-items: center; gap: 20px; }
+    .hero-image-wrap { width: 130px; height: 130px; }
+    .hero-name { font-size: 38px; letter-spacing: -1px; }
+    .hero-role { font-size: 12px; letter-spacing: 2px; }
+    .hero-bio { font-size: 14px; max-width: 100%; }
+    .hero-buttons { flex-direction: column; gap: 10px; }
+    .hero-buttons .btn { width: 100%; text-align: center; padding: 13px 20px; }
+    .section-title { font-size: 26px; }
+    .about-grid { grid-template-columns: 1fr; gap: 20px; }
+    .skills-grid { grid-template-columns: 1fr; gap: 16px; }
+    .cta-strip { flex-direction: column; gap: 18px; padding: 28px 20px; text-align: center; }
+    .cta-text .cta-heading { font-size: 22px; }
+    .kenobi-img { display: none; }
+}
+
 /* Footer */
 .footer {
     position: relative;

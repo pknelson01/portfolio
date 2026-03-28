@@ -108,6 +108,23 @@
     color: var(--white);
 }
 
+/* ── Responsive ── */
+@media (max-width: 768px) {
+    .navbar { padding: 14px 30px; }
+    .contact-container { padding: 48px 48px; }
+    .contact-title { font-size: 38px; }
+}
+
+@media (max-width: 480px) {
+    .navbar { padding: 12px 20px; }
+    .main-content { padding: 30px 16px; align-items: flex-start; }
+    .contact-container { padding: 32px 24px; }
+    .contact-title { font-size: 30px; }
+    .contact-subtitle { font-size: 11px; letter-spacing: 2px; }
+    .email-address { font-size: 13px; }
+    .btn { font-size: 12px; padding: 13px 20px; }
+}
+
 /* Footer */
 .footer {
     position: relative;

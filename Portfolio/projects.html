@@ -19,7 +19,15 @@
             <a href="/projects" class="active">Projects</a>
             <a href="/contact">Contact</a>
         </div>
+        <button class="hamburger-btn" id="hamburger-btn" aria-label="Menu">
+            <span></span><span></span><span></span>
+        </button>
     </nav>
+    <div class="mobile-nav" id="mobile-nav">
+        <a href="/">About</a>
+        <a href="/projects" class="active">Projects</a>
+        <a href="/contact">Contact</a>
+    </div>
 
     <main class="page-content">
         <div class="page-header">
@@ -59,5 +67,18 @@
     <footer class="footer">
         &copy; 2026 Parker Nelson
     </footer>
+
+    <script>
+        const hamburgerBtn = document.getElementById('hamburger-btn');
+        const mobileNav = document.getElementById('mobile-nav');
+        hamburgerBtn.addEventListener('click', () => {
+            hamburgerBtn.classList.toggle('active');
+            mobileNav.classList.toggle('active');
+        });
+        mobileNav.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
+            hamburgerBtn.classList.remove('active');
+            mobileNav.classList.remove('active');
+        }));
+    </script>
 </body>
 </html>

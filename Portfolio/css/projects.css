@@ -156,6 +156,24 @@
     content: ' →';
 }
 
+/* ── Responsive ── */
+@media (max-width: 768px) {
+    .navbar { padding: 14px 30px; }
+    .page-content { padding: 96px 24px 48px; }
+    .page-title { font-size: 36px; }
+    .projects-grid { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 480px) {
+    .navbar { padding: 12px 20px; }
+    .page-content { padding: 80px 16px 36px; }
+    .page-title { font-size: 28px; }
+    .page-subtitle { font-size: 11px; }
+    .projects-grid { grid-template-columns: 1fr; gap: 16px; }
+    .project-card { padding: 24px 20px; }
+    .project-name { font-size: 22px; }
+}
+
 /* Footer */
 .footer {
     position: relative;
