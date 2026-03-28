@@ -97,7 +97,7 @@
 }
 
 @media (max-width: 480px) {
-    .main-content { padding: 30px 16px; align-items: flex-start; }
+    .main-content { padding: 80px 16px 40px; align-items: flex-start; }
     .contact-container { padding: 32px 24px; }
     .contact-title { font-size: 30px; }
     .contact-subtitle { font-size: 11px; letter-spacing: 2px; }
