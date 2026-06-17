@@ -1,0 +1,420 @@
+/* IS-201 Home Page Styles */
+
+.page {
+    flex: 1;
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 120px 40px 80px;
+    gap: 40px;
+    max-width: 1100px;
+    margin: 0 auto;
+    width: 100%;
+}
+
+/* ── Sections ── */
+.section {
+    width: 100%;
+    background: var(--charcoal);
+    border: 2px solid rgba(255, 255, 255, 0.15);
+    padding: 52px 60px;
+}
+
+.section-label {
+    font-family: 'Oswald', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--steel);
+    margin-bottom: 8px;
+}
+
+.section-title {
+    font-family: 'Oswald', sans-serif;
+    font-size: 36px;
+    font-weight: 700;
+    color: var(--white);
+    letter-spacing: -0.5px;
+    margin-bottom: 20px;
+}
+
+.section-divider {
+    width: 40px;
+    height: 2px;
+    background: var(--white);
+    margin-bottom: 36px;
+}
+
+/* ── Hero ── */
+.hero {
+    border: 4px solid var(--white);
+    padding: 64px 60px;
+}
+
+.hero-inner {
+    display: flex;
+    align-items: center;
+    gap: 60px;
+}
+
+.hero-text { flex: 1; }
+
+.hero-name {
+    font-family: 'Oswald', sans-serif;
+    font-size: 68px;
+    font-weight: 700;
+    color: var(--white);
+    letter-spacing: -2px;
+    line-height: 1;
+    margin-bottom: 14px;
+}
+
+.hero-role {
+    font-family: 'Oswald', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--steel);
+    text-transform: uppercase;
+    letter-spacing: 4px;
+    margin-bottom: 28px;
+}
+
+.hero-divider {
+    width: 50px;
+    height: 2px;
+    background: var(--white);
+    margin-bottom: 24px;
+}
+
+.hero-bio {
+    font-size: 15px;
+    color: var(--off-white);
+    line-height: 1.8;
+    margin-bottom: 40px;
+    max-width: 480px;
+}
+
+.hero-buttons {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+.hero-image-wrap {
+    flex-shrink: 0;
+    width: 260px;
+    height: 260px;
+    border: 3px solid rgba(255, 255, 255, 0.3);
+    overflow: hidden;
+}
+
+.hero-image-wrap img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top;
+    display: block;
+}
+
+/* ── Buttons ── */
+.btn {
+    font-family: 'Oswald', sans-serif;
+    font-size: 13px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 14px 32px;
+    border: 2px solid var(--white);
+    cursor: pointer;
+    transition: all 0.25s ease;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.btn-primary {
+    background: var(--white);
+    color: var(--charcoal);
+}
+
+.btn-primary:hover {
+    background: transparent;
+    color: var(--white);
+}
+
+.btn-secondary {
+    background: transparent;
+    color: var(--white);
+}
+
+.btn-secondary:hover {
+    background: var(--white);
+    color: var(--charcoal);
+}
+
+/* ── Resume Grid ── */
+.resume-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 48px;
+}
+
+.resume-col {
+    display: flex;
+    flex-direction: column;
+    gap: 36px;
+}
+
+.resume-block-title {
+    font-family: 'Oswald', sans-serif;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--steel);
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* ── Education ── */
+.edu-card {
+    padding-left: 16px;
+    border-left: 2px solid rgba(255, 255, 255, 0.15);
+    transition: border-color 0.2s ease;
+}
+
+.edu-card:hover { border-left-color: var(--white); }
+
+.edu-school {
+    font-family: 'Oswald', sans-serif;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--white);
+    margin-bottom: 4px;
+}
+
+.edu-degree {
+    font-family: 'Oswald', sans-serif;
+    font-size: 12px;
+    letter-spacing: 1px;
+    color: var(--steel);
+    text-transform: uppercase;
+    margin-bottom: 6px;
+}
+
+.edu-meta {
+    font-size: 12px;
+    color: var(--steel);
+    font-family: 'Anonymous Pro', monospace;
+    margin-bottom: 16px;
+}
+
+.edu-highlights {
+    margin: 0;
+    padding-left: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.edu-highlights li {
+    font-size: 13px;
+    color: var(--off-white);
+    line-height: 1.6;
+}
+
+/* ── Timeline (Experience) ── */
+.timeline {
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+}
+
+.timeline-entry {
+    padding-left: 16px;
+    border-left: 2px solid rgba(255, 255, 255, 0.15);
+    transition: border-color 0.2s ease;
+}
+
+.timeline-entry:hover { border-left-color: var(--white); }
+
+.entry-title {
+    font-family: 'Oswald', sans-serif;
+    font-size: 17px;
+    font-weight: 600;
+    color: var(--white);
+    margin-bottom: 2px;
+}
+
+.entry-org {
+    font-family: 'Oswald', sans-serif;
+    font-size: 11px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--steel);
+    margin-bottom: 4px;
+}
+
+.entry-dates {
+    font-size: 11px;
+    color: var(--steel);
+    font-family: 'Anonymous Pro', monospace;
+    margin-bottom: 10px;
+}
+
+.entry-bullets {
+    margin: 0;
+    padding-left: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.entry-bullets li {
+    font-size: 13px;
+    color: var(--off-white);
+    line-height: 1.6;
+}
+
+/* ── Achievements ── */
+.achievement-list {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.achievement-list li {
+    font-size: 13px;
+    color: var(--off-white);
+    padding-left: 24px;
+    position: relative;
+    line-height: 1.5;
+}
+
+.achievement-list li::before {
+    content: '//';
+    position: absolute;
+    left: 0;
+    font-family: 'Oswald', sans-serif;
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--steel);
+    top: 2px;
+}
+
+/* ── Skills ── */
+.skills-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+}
+
+.skill-group-label {
+    font-family: 'Oswald', sans-serif;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--steel);
+    margin-bottom: 12px;
+}
+
+.skill-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.skill-tag {
+    font-family: 'Oswald', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--off-white);
+    border: 1px solid rgba(232, 232, 232, 0.2);
+    padding: 5px 12px;
+    transition: border-color 0.2s ease;
+}
+
+.skill-tag:hover { border-color: var(--white); }
+.skill-tag.proficient { border-color: rgba(255, 255, 255, 0.55); }
+.skill-tag.moderate { border-color: rgba(255, 255, 255, 0.35); }
+
+/* ── CTA Strip ── */
+.cta-strip {
+    border: 4px solid var(--white);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 40px 60px;
+    gap: 40px;
+}
+
+.cta-text .cta-heading {
+    font-family: 'Oswald', sans-serif;
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--white);
+    margin-bottom: 6px;
+}
+
+.cta-text .cta-sub {
+    font-size: 14px;
+    color: var(--steel);
+}
+
+.cta-buttons {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+/* ── Footer ── */
+.footer {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+    padding: 24px;
+    font-family: 'Oswald', sans-serif;
+    font-size: 10px;
+    letter-spacing: 2px;
+    color: var(--steel);
+    text-transform: uppercase;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* ── Responsive ── */
+@media (max-width: 768px) {
+    .page { padding: 96px 24px 60px; gap: 24px; }
+    .section { padding: 36px 32px; }
+    .hero { padding: 36px 32px; }
+    .hero-inner { flex-direction: column-reverse; gap: 24px; }
+    .hero-image-wrap { width: 180px; height: 180px; }
+    .hero-name { font-size: 52px; }
+    .resume-grid { grid-template-columns: 1fr; gap: 32px; }
+    .skills-grid { grid-template-columns: 1fr 1fr; }
+    .cta-strip { flex-direction: column; gap: 24px; padding: 36px 32px; text-align: center; }
+    .cta-buttons { justify-content: center; }
+}
+
+@media (max-width: 480px) {
+    .page { padding: 80px 16px 40px; gap: 16px; }
+    .section { padding: 28px 20px; }
+    .hero { padding: 28px 20px; }
+    .hero-inner { flex-direction: column-reverse; align-items: center; gap: 20px; }
+    .hero-image-wrap { width: 140px; height: 140px; }
+    .hero-name { font-size: 40px; letter-spacing: -1px; }
+    .hero-role { font-size: 11px; letter-spacing: 2px; }
+    .hero-bio { font-size: 14px; max-width: 100%; }
+    .hero-buttons { flex-direction: column; gap: 10px; }
+    .hero-buttons .btn { width: 100%; text-align: center; }
+    .section-title { font-size: 26px; }
+    .skills-grid { grid-template-columns: 1fr; }
+    .cta-strip { flex-direction: column; gap: 18px; padding: 28px 20px; text-align: center; }
+    .cta-text .cta-heading { font-size: 22px; }
+}

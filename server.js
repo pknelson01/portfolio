@@ -21,6 +21,7 @@ const app = express();
 // Static Files
 // ----------------------------------------------------
 app.use("/portfolio", express.static(path.join(__dirname, "Portfolio")));
+app.use("/is201", express.static(path.join(__dirname, "IS201")));
 
 // ============================================================================
 // ROUTES
@@ -40,6 +41,18 @@ app.get("/contact", (req, res) => {
 
 app.get("/truereview", (req, res) => {
   res.redirect("https://truereview-fxde.onrender.com/");
+});
+
+app.get("/is201", (req, res) => {
+  res.sendFile(path.join(__dirname, "IS201/index.html"));
+});
+
+app.get("/is201/scratch", (req, res) => {
+  res.sendFile(path.join(__dirname, "IS201/scratch.html"));
+});
+
+app.get("/is201/webapp", (req, res) => {
+  res.sendFile(path.join(__dirname, "IS201/webapp.html"));
 });
 
 // ----------------------------------------------------

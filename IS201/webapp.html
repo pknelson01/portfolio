@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GHIN Calculator &mdash; IS-201</title>
+    <link rel="icon" href="/portfolio/images/favicon.png" type="image/png">
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;600;700&family=Anonymous+Pro:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        /* ── Reset + Variables ── */
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --concrete: #525252;
+            --steel: #A8A8A8;
+            --white: #FFFFFF;
+            --charcoal: #2B2B2B;
+            --off-white: #E8E8E8;
+            --green: #5a9e6f;
+            --red: #b85450;
+        }
+
+        body {
+            font-family: 'Anonymous Pro', monospace;
+            background: var(--concrete);
+            color: var(--off-white);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* ── Navbar ── */
+        .navbar {
+            background: var(--charcoal);
+            border-bottom: 2px solid rgba(255, 255, 255, 0.15);
+            padding: 16px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .brand {
+            font-family: 'Oswald', sans-serif;
+            font-size: 20px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--white);
+            text-decoration: none;
+        }
+
+        .nav-links-right {
+            display: flex;
+            gap: 24px;
+        }
+
+        .nav-links-right a {
+            font-family: 'Oswald', sans-serif;
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--steel);
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+
+        .nav-links-right a:hover { color: var(--white); }
+
+        /* ── Grid overlay (matches portfolio aesthetic) ── */
+        .grid-overlay {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background-image:
+                linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px);
+            background-size: 100px 100px;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* ── Main layout ── */
+        .main {
+            flex: 1;
+            position: relative;
+            z-index: 1;
+            max-width: 900px;
+            margin: 0 auto;
+            width: 100%;
+            padding: 60px 40px 80px;
+            display: flex;
+            flex-direction: column;
+            gap: 32px;
+        }
+
+        /* ── Page header ── */
+        .page-header { text-align: center; }
+
+        .page-label {
+            font-family: 'Oswald', sans-serif;
+            font-size: 10px;
+            font-weight: 600;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            color: var(--steel);
+            margin-bottom: 10px;
+        }
+
+        .page-title {
+            font-family: 'Oswald', sans-serif;
+            font-size: 52px;
+            font-weight: 700;
+            color: var(--white);
+            letter-spacing: -1px;
+            margin-bottom: 14px;
+        }
+
+        .page-desc {
+            font-size: 14px;
+            color: var(--steel);
+            max-width: 520px;
+            margin: 0 auto;
+            line-height: 1.7;
+        }
+
+        /* ── Card base ── */
+        .card {
+            background: var(--charcoal);
+            border: 2px solid rgba(255, 255, 255, 0.15);
+            padding: 40px 48px;
+        }
+
+        .card-title {
+            font-family: 'Oswald', sans-serif;
+            font-size: 10px;
+            font-weight: 600;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: var(--steel);
+            margin-bottom: 24px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        /* ── Handicap Display ── */
+        .handicap-display {
+            background: var(--charcoal);
+            border: 4px solid var(--white);
+            padding: 48px;
+            text-align: center;
+        }
+
+        .handicap-label {
+            font-family: 'Oswald', sans-serif;
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            color: var(--steel);
+            margin-bottom: 12px;
+        }
+
+        .handicap-value {
+            font-family: 'Oswald', sans-serif;
+            font-size: 100px;
+            font-weight: 700;
+            color: var(--white);
+            line-height: 1;
+            margin-bottom: 10px;
+            transition: color 0.4s ease;
+        }
+
+        .handicap-value.flash { color: var(--green); }
+
+        .handicap-sub {
+            font-size: 13px;
+            color: var(--steel);
+        }
+
+        /* ── Input Form ── */
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr auto;
+            gap: 16px;
+            align-items: end;
+        }
+
+        .form-group { display: flex; flex-direction: column; gap: 6px; }
+
+        .form-label {
+            font-family: 'Oswald', sans-serif;
+            font-size: 10px;
+            font-weight: 600;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--steel);
+        }
+
+        .form-input {
+            font-family: 'Anonymous Pro', monospace;
+            font-size: 15px;
+            color: var(--white);
+            background: var(--concrete);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 12px 14px;
+            outline: none;
+            width: 100%;
+            transition: border-color 0.2s ease;
+            -moz-appearance: textfield;
+        }
+
+        .form-input::-webkit-outer-spin-button,
+        .form-input::-webkit-inner-spin-button { -webkit-appearance: none; }
+
+        .form-input:focus { border-color: var(--white); }
+
+        .btn-add {
+            font-family: 'Oswald', sans-serif;
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            background: var(--white);
+            color: var(--charcoal);
+            border: 2px solid var(--white);
+            padding: 13px 28px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+        }
+
+        .btn-add:hover {
+            background: transparent;
+            color: var(--white);
+        }
+
+        .form-error {
+            font-size: 12px;
+            color: var(--red);
+            margin-top: 10px;
+            min-height: 16px;
+            font-family: 'Anonymous Pro', monospace;
+        }
+
+        /* ── Formula Card ── */
+        .formula-card {
+            background: var(--charcoal);
+            border: 2px solid rgba(255, 255, 255, 0.15);
+            padding: 22px 48px;
+            display: flex;
+            align-items: center;
+            gap: 40px;
+        }
+
+        .formula-label {
+            font-family: 'Oswald', sans-serif;
+            font-size: 10px;
+            font-weight: 600;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--steel);
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        .formula-text {
+            font-family: 'Anonymous Pro', monospace;
+            font-size: 15px;
+            color: var(--white);
+        }
+
+        /* ── History Card ── */
+        .history-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .btn-clear {
+            font-family: 'Oswald', sans-serif;
+            font-size: 10px;
+            font-weight: 600;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            background: transparent;
+            color: var(--steel);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            padding: 6px 14px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-clear:hover {
+            border-color: var(--red);
+            color: var(--red);
+        }
+
+        .rounds-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .rounds-table th {
+            font-family: 'Oswald', sans-serif;
+            font-size: 10px;
+            font-weight: 600;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--steel);
+            text-align: left;
+            padding: 8px 12px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .rounds-table td {
+            font-size: 14px;
+            color: var(--off-white);
+            padding: 11px 12px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+        }
+
+        .rounds-table tr:last-child td { border-bottom: none; }
+
+        .rounds-table td.diff-cell {
+            font-family: 'Oswald', sans-serif;
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--white);
+        }
+
+        .rounds-table td.diff-cell.best { color: var(--green); }
+
+        .table-note {
+            font-size: 11px;
+            color: var(--steel);
+            margin-top: 14px;
+            text-align: right;
+            font-family: 'Anonymous Pro', monospace;
+        }
+
+        .no-rounds {
+            text-align: center;
+            color: var(--steel);
+            font-size: 13px;
+            padding: 36px 0;
+        }
+
+        /* ── Footer ── */
+        .footer {
+            position: relative;
+            z-index: 1;
+            text-align: center;
+            padding: 24px;
+            font-family: 'Oswald', sans-serif;
+            font-size: 10px;
+            letter-spacing: 2px;
+            color: var(--steel);
+            text-transform: uppercase;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        /* ── Responsive ── */
+        @media (max-width: 700px) {
+            .navbar { padding: 16px 24px; }
+            .main { padding: 40px 24px 60px; gap: 24px; }
+            .page-title { font-size: 36px; }
+            .handicap-display { padding: 32px 20px; }
+            .handicap-value { font-size: 72px; }
+            .card { padding: 28px 24px; }
+            .formula-card { padding: 18px 24px; flex-direction: column; gap: 8px; align-items: flex-start; }
+            .form-row { grid-template-columns: 1fr 1fr; }
+            .btn-add { grid-column: 1 / -1; }
+            .rounds-table th, .rounds-table td { padding: 8px; font-size: 12px; }
+        }
+
+        @media (max-width: 480px) {
+            .form-row { grid-template-columns: 1fr; }
+            .handicap-value { font-size: 56px; }
+            .nav-links-right { display: none; }
+        }
+    </style>
+</head>
+<body>
+    <div class="grid-overlay"></div>
+
+    <nav class="navbar">
+        <a href="/is201" class="brand">GHIN Calculator</a>
+        <div class="nav-links-right">
+            <a href="/is201/scratch">Film Page</a>
+            <a href="/is201">IS-201 Home</a>
+            <a href="/">Portfolio</a>
+        </div>
+    </nav>
+
+    <div class="main">
+
+        <!-- ── Header ── -->
+        <div class="page-header">
+            <div class="page-label">// IS-201 Web App</div>
+            <h1 class="page-title">GHIN Handicap</h1>
+            <p class="page-desc">
+                Track your golf rounds and calculate your GHIN handicap index.
+                Enter a gross score, course rating, and slope rating for each round.
+                Your index is based on the lowest 8 differentials.
+            </p>
+        </div>
+
+        <!-- ── Handicap Index ── -->
+        <div class="handicap-display">
+            <div class="handicap-label">Handicap Index</div>
+            <div class="handicap-value" id="handicap-value">&mdash;</div>
+            <div class="handicap-sub" id="handicap-sub">Add rounds to calculate your index</div>
+        </div>
+
+        <!-- ── Input Form ── -->
+        <div class="card">
+            <div class="card-title">Add a Round</div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label" for="ags">Gross Score</label>
+                    <input class="form-input" type="number" id="ags" placeholder="e.g. 85" min="1">
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="cr">Course Rating</label>
+                    <input class="form-input" type="number" id="cr" placeholder="e.g. 72.1" step="0.1" min="0">
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="sr">Slope Rating</label>
+                    <input class="form-input" type="number" id="sr" placeholder="e.g. 131" min="55" max="155">
+                </div>
+                <button class="btn-add" onclick="addRound()">Add Round</button>
+            </div>
+            <div class="form-error" id="form-error"></div>
+        </div>
+
+        <!-- ── Formula Reference ── -->
+        <div class="formula-card">
+            <div class="formula-label">GHIN Formula</div>
+            <div class="formula-text">Differential = ((Gross Score &minus; Course Rating) &times; 113) &divide; Slope Rating</div>
+        </div>
+
+        <!-- ── Round History ── -->
+        <div class="card">
+            <div class="history-header">
+                <div class="card-title" style="margin-bottom:0; padding-bottom:0; border-bottom:none;">Round History</div>
+                <button class="btn-clear" onclick="clearRounds()">Clear All</button>
+            </div>
+            <div id="rounds-container">
+                <div class="no-rounds">No rounds yet. Add your first round above.</div>
+            </div>
+        </div>
+
+    </div>
+
+    <footer class="footer">
+        &copy; 2026 Parker Nelson &nbsp;&middot;&nbsp; IS-201 Final Project &nbsp;&middot;&nbsp; GHIN Web App
+    </footer>
+
+    <script>
+        // ── State ─────────────────────────────────────────────────────────────
+        let rounds = [];
+
+        function loadRounds() {
+            try {
+                const stored = localStorage.getItem('ghinRounds');
+                rounds = stored ? JSON.parse(stored) : [];
+            } catch (e) {
+                rounds = [];
+            }
+        }
+
+        function saveRounds() {
+            localStorage.setItem('ghinRounds', JSON.stringify(rounds));
+        }
+
+        // ── GHIN Formula ──────────────────────────────────────────────────────
+        // Replicates the original Python script logic exactly.
+        function calcDifferential(ags, cr, sr) {
+            return Math.round(((ags - cr) * 113) / sr * 10) / 10;
+        }
+
+        // Sort all rounds by differential, take best 20, average best 8 (always /8)
+        function calcHandicapIndex(rounds) {
+            if (rounds.length === 0) return null;
+            const sorted = [...rounds].sort((a, b) => a.diff - b.diff);
+            const best20 = sorted.slice(0, Math.min(20, sorted.length));
+            const best8 = best20.slice(0, Math.min(8, best20.length));
+            const sum = best8.reduce((acc, r) => acc + r.diff, 0);
+            return Math.round((sum / 8) * 10) / 10;
+        }
+
+        // Returns Set of original indices used in the handicap calculation
+        function getBest8Indices() {
+            const indexed = rounds.map((r, i) => ({ ...r, origIndex: i }));
+            const sorted = indexed.sort((a, b) => a.diff - b.diff);
+            const best = sorted.slice(0, Math.min(20, sorted.length)).slice(0, Math.min(8, sorted.length));
+            return new Set(best.map(r => r.origIndex));
+        }
+
+        // ── UI ────────────────────────────────────────────────────────────────
+        function addRound() {
+            const agsEl  = document.getElementById('ags');
+            const crEl   = document.getElementById('cr');
+            const srEl   = document.getElementById('sr');
+            const errEl  = document.getElementById('form-error');
+
+            const ags = parseFloat(agsEl.value);
+            const cr  = parseFloat(crEl.value);
+            const sr  = parseFloat(srEl.value);
+
+            errEl.textContent = '';
+
+            if (isNaN(ags) || isNaN(cr) || isNaN(sr)) {
+                errEl.textContent = 'Please fill in all three fields.';
+                return;
+            }
+            if (ags < 1) {
+                errEl.textContent = 'Gross Score must be a positive number.';
+                return;
+            }
+            if (sr < 55 || sr > 155) {
+                errEl.textContent = 'Slope Rating must be between 55 and 155.';
+                return;
+            }
+
+            const diff = calcDifferential(ags, cr, sr);
+            rounds.push({ ags, cr, sr, diff });
+            saveRounds();
+
+            agsEl.value = '';
+            crEl.value  = '';
+            srEl.value  = '';
+            agsEl.focus();
+
+            render();
+            flashHandicap();
+        }
+
+        function clearRounds() {
+            if (rounds.length === 0) return;
+            if (!confirm('Clear all rounds? This cannot be undone.')) return;
+            rounds = [];
+            saveRounds();
+            render();
+        }
+
+        function flashHandicap() {
+            const el = document.getElementById('handicap-value');
+            el.classList.add('flash');
+            setTimeout(() => el.classList.remove('flash'), 600);
+        }
+
+        function render() {
+            // Update handicap display
+            const idx  = calcHandicapIndex(rounds);
+            const hv   = document.getElementById('handicap-value');
+            const hs   = document.getElementById('handicap-sub');
+
+            if (idx === null) {
+                hv.textContent = '\u2014';
+                hs.textContent = 'Add rounds to calculate your index';
+            } else {
+                hv.textContent = idx.toFixed(1);
+                const used = Math.min(8, Math.min(20, rounds.length));
+                hs.textContent = `Based on ${used} best differential${used !== 1 ? 's' : ''} across ${rounds.length} round${rounds.length !== 1 ? 's' : ''}`;
+            }
+
+            // Update round history table
+            const container = document.getElementById('rounds-container');
+
+            if (rounds.length === 0) {
+                container.innerHTML = '<div class="no-rounds">No rounds yet. Add your first round above.</div>';
+                return;
+            }
+
+            const best8 = getBest8Indices();
+
+            // Display newest first
+            const rows = [...rounds]
+                .map((r, i) => ({ ...r, origIndex: i }))
+                .reverse()
+                .map((r, revIdx) => {
+                    const isBest = best8.has(r.origIndex);
+                    const num = rounds.length - revIdx;
+                    return `<tr>
+                        <td>${num}</td>
+                        <td>${r.ags}</td>
+                        <td>${r.cr.toFixed(1)}</td>
+                        <td>${r.sr}</td>
+                        <td class="diff-cell${isBest ? ' best' : ''}">${r.diff.toFixed(1)}${isBest ? ' &starf;' : ''}</td>
+                    </tr>`;
+                })
+                .join('');
+
+            container.innerHTML = `
+                <table class="rounds-table">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Gross Score</th>
+                            <th>Course Rating</th>
+                            <th>Slope Rating</th>
+                            <th>Differential</th>
+                        </tr>
+                    </thead>
+                    <tbody>${rows}</tbody>
+                </table>
+                <p class="table-note">&starf; = used in handicap calculation</p>
+            `;
+        }
+
+        // Enter key submits from any input field
+        document.addEventListener('keydown', e => {
+            if (e.key === 'Enter' && document.activeElement.classList.contains('form-input')) {
+                addRound();
+            }
+        });
+
+        // ── Init ──────────────────────────────────────────────────────────────
+        loadRounds();
+        render();
+    </script>
+</body>
+</html>
