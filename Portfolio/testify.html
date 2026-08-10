@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Testify Together — Parker Nelson</title>
+    <link rel="icon" href="/portfolio/images/favicon.png" type="image/png">
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;600;700&family=Anonymous+Pro:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/portfolio/css/base.css">
+    <link rel="stylesheet" href="/portfolio/css/testify.css">
+</head>
+<body>
+    <div class="grid-overlay"></div>
+
+    <nav class="navbar">
+        <a href="/" class="brand">Parker Nelson</a>
+        <div class="nav-links">
+            <a href="/">About</a>
+            <a href="/projects">Projects</a>
+            <a href="/contact">Contact</a>
+        </div>
+        <button class="hamburger-btn" id="hamburger-btn" aria-label="Menu">
+            <span></span><span></span><span></span>
+        </button>
+    </nav>
+    <div class="mobile-nav-overlay" id="mobile-nav-overlay"></div>
+    <div class="mobile-nav" id="mobile-nav">
+        <button class="mobile-nav-close" id="mobile-nav-close" aria-label="Close menu">&#x2715;</button>
+        <a href="/">About</a>
+        <a href="/projects">Projects</a>
+        <a href="/contact">Contact</a>
+        <hr style="border:none;border-top:1px solid rgba(255,255,255,0.2);margin:8px 28px;">
+        <a href="/is201">IS-201 Web Dev Project</a>
+    </div>
+
+    <main class="page-content">
+        <div class="page-header">
+            <div class="page-title">Testify Together</div>
+            <div class="page-subtitle">Share what you know to be true</div>
+            <div class="title-divider"></div>
+        </div>
+
+        <div class="testify-photos">
+            <img src="/portfolio/images/temple-wedding.jpeg"
+                 alt="A couple on the temple grounds on their wedding day" loading="lazy">
+            <img src="/portfolio/images/temple-steps.jpeg"
+                 alt="Two young men in front of a temple" loading="lazy">
+            <img src="/portfolio/images/temple-evening.jpeg"
+                 alt="A couple outside the temple entrance at dusk" loading="lazy">
+        </div>
+
+        <form class="testify-form" id="testify-form" novalidate>
+
+            <!-- Name + Anonymous -->
+            <div class="name-row">
+                <input
+                    type="text"
+                    id="name"
+                    class="testify-input"
+                    placeholder="Your name"
+                    maxlength="80"
+                    autocomplete="name"
+                    required>
+                <button type="button" class="toggle-btn" id="anon-btn" aria-pressed="false">Anonymous</button>
+            </div>
+
+            <!-- Testimony -->
+            <textarea
+                id="testimony"
+                class="testify-textarea"
+                placeholder="Testify here"
+                maxlength="5000"
+                rows="14"
+                required></textarea>
+
+            <!-- Visibility + Submit -->
+            <div class="submit-row">
+                <div class="visibility-group" role="radiogroup" aria-label="Visibility">
+                    <button type="button" class="toggle-btn active" id="public-btn" role="radio" aria-checked="true">Public</button>
+                    <button type="button" class="toggle-btn" id="private-btn" role="radio" aria-checked="false">Private</button>
+                </div>
+                <button type="submit" class="submit-btn" id="submit-btn">Submit</button>
+            </div>
+
+            <p class="visibility-note" id="visibility-note">Public — Parker may share this testimony on the site.</p>
+            <p class="form-status" id="form-status" role="status" aria-live="polite"></p>
+        </form>
+    </main>
+
+    <footer class="footer">
+        &copy; 2026 Parker Nelson
+    </footer>
+
+    <script>
+        /* ── Mobile nav ── */
+        const hamburgerBtn = document.getElementById('hamburger-btn');
+        const mobileNav = document.getElementById('mobile-nav');
+        const mobileNavOverlay = document.getElementById('mobile-nav-overlay');
+        const mobileNavClose = document.getElementById('mobile-nav-close');
+
+        function openNav() {
+            mobileNav.classList.add('active');
+            mobileNavOverlay.classList.add('active');
+        }
+        function closeNav() {
+            mobileNav.classList.remove('active');
+            mobileNavOverlay.classList.remove('active');
+        }
+
+        hamburgerBtn.addEventListener('click', openNav);
+        mobileNavClose.addEventListener('click', closeNav);
+        mobileNavOverlay.addEventListener('click', closeNav);
+        mobileNav.querySelectorAll('a').forEach(a => a.addEventListener('click', closeNav));
+
+        /* ── Form ── */
+        const form = document.getElementById('testify-form');
+        const nameInput = document.getElementById('name');
+        const anonBtn = document.getElementById('anon-btn');
+        const testimony = document.getElementById('testimony');
+        const publicBtn = document.getElementById('public-btn');
+        const privateBtn = document.getElementById('private-btn');
+        const visibilityNote = document.getElementById('visibility-note');
+        const submitBtn = document.getElementById('submit-btn');
+        const status = document.getElementById('form-status');
+
+        let anonymous = false;
+        let visibility = 'Public';
+
+        function setStatus(message, kind) {
+            status.textContent = message;
+            status.className = 'form-status' + (kind ? ' ' + kind : '');
+        }
+
+        /* Anonymous toggle — clears and disables the name field */
+        anonBtn.addEventListener('click', () => {
+            anonymous = !anonymous;
+            anonBtn.classList.toggle('active', anonymous);
+            anonBtn.setAttribute('aria-pressed', String(anonymous));
+            nameInput.disabled = anonymous;
+            nameInput.required = !anonymous;
+            nameInput.placeholder = anonymous ? 'Anonymous' : 'Your name';
+            if (anonymous) nameInput.value = '';
+            setStatus('');
+        });
+
+        /* Public / Private */
+        function setVisibility(next) {
+            visibility = next;
+            const isPublic = next === 'Public';
+            publicBtn.classList.toggle('active', isPublic);
+            privateBtn.classList.toggle('active', !isPublic);
+            publicBtn.setAttribute('aria-checked', String(isPublic));
+            privateBtn.setAttribute('aria-checked', String(!isPublic));
+            visibilityNote.textContent = isPublic
+                ? 'Public — Parker may share this testimony on the site.'
+                : 'Private — for Parker only, never shared publicly.';
+        }
+
+        publicBtn.addEventListener('click', () => setVisibility('Public'));
+        privateBtn.addEventListener('click', () => setVisibility('Private'));
+
+        /* Submit */
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const name = nameInput.value.trim();
+            const text = testimony.value.trim();
+
+            if (!anonymous && !name) {
+                setStatus('Please enter your name, or choose Anonymous.', 'error');
+                nameInput.focus();
+                return;
+            }
+            if (!text) {
+                setStatus('Please write your testimony before submitting.', 'error');
+                testimony.focus();
+                return;
+            }
+
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Sending...';
+            setStatus('');
+
+            try {
+                const res = await fetch('/api/testify', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, testimony: text, anonymous, visibility })
+                });
+                const data = await res.json().catch(() => ({}));
+
+                if (!res.ok) {
+                    setStatus(data.error || 'Something went wrong. Please try again.', 'error');
+                    return;
+                }
+
+                form.reset();
+                if (anonymous) anonBtn.click();
+                setVisibility('Public');
+                setStatus('Thank you — your testimony has been sent.', 'success');
+            } catch (err) {
+                setStatus('Could not reach the server. Please check your connection and try again.', 'error');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Submit';
+            }
+        });
+    </script>
+</body>
+</html>
